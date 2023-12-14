@@ -65,11 +65,11 @@ void traverseNode(StoryNode node) {
     {
         if (node.characterArray[i] != "None")
         {
-            if (node.characterArray[i] == "Eren")
+            if (strcmp(node.characterArray[i], "Eren") == 0)
                 printf("艾連 ");
-            else if (node.characterArray[i] == "Mikasa")
+            else if (strcmp(node.characterArray[i], "Mikasa") == 0)
                 printf("米卡莎 ");
-            else if (node.characterArray[i] == "Armin")
+            else if (strcmp(node.characterArray[i], "Armin") == 0)
                 printf("阿爾敏 ");
         }
     }
