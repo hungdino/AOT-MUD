@@ -15,9 +15,8 @@ typedef struct {
 // 函數原型聲明
 void displayStoryNode(StoryNode node);
 
-int main() {
-    // 創建和初始化故事節點
-    StoryNode node1 = {
+/*
+StoryNode node1 = {
         "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回。",
         {
             {"聽從阿爾敏的選擇", 2},
@@ -25,12 +24,7 @@ int main() {
             {"要求回到軍團", 4}
         }
     };
-
-    // 顯示故事節點
-    displayStoryNode(node1);
-
-    return 0;
-}
+*/
 
 void displayStoryNode(StoryNode node) {
     printf("故事: %s\n", node.story);
