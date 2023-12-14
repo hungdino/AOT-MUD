@@ -128,6 +128,10 @@ void sigchld_handler(int s) {
 }
 
 int main(int argc, char *argv[]) {
+    traverseOptions(node1);
+
+
+/*
     int sockfd, newsockfd, portno;
     socklen_t clilen;
     struct sockaddr_in serv_addr, cli_addr;
@@ -242,6 +246,7 @@ int main(int argc, char *argv[]) {
     }
 
     close(sockfd);
+*/
     return 0; 
 }
 
