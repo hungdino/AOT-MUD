@@ -2,8 +2,6 @@ include ../Make.defines
 
 PROGS =	client server
 
-CLEANFILES = *.o
-
 all:	${PROGS}
 
 # Rules for building client and server
