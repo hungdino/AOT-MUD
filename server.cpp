@@ -1,3 +1,4 @@
+#include <story.h>
 #include "unp.h"
 #include <stdio.h>
 #include <stdlib.h>
