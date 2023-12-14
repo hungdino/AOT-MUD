@@ -57,7 +57,23 @@ StoryNode node2 = {
     }
 };
 
-void traverseOptions(StoryNode node) {
+void traverseNode(StoryNode node) {
+    printf("進入節點 %d.\n", node.nodeSeriesNum);
+    printf("故事：%s\n", node.story);
+    printf("本輪需要做出選擇的玩家為：");
+    for (int i = 0; i < MAX_CHARACTERS_PER_NODE; i++)
+    {
+        if (node.characterArray[i] != "None")
+        {
+            if (node.characterArray[i] == "Eren")
+                printf("艾連 ");
+            else if (node.characterArray[i] == "Mikasa")
+                printf("米卡莎 ");
+            else if (node.characterArray[i] == "Armin")
+                printf("阿爾敏 ");
+        }
+    }
+
     for (int i = 0; i < MAX_CHARACTERS_PER_NODE; ++i) {
         char (*options)[OPTION_DESC_LENGTH]; // Pointer to the options array
         if (strcmp(node.characterArray[i], "Eren") == 0) {

@@ -128,7 +128,9 @@ void sigchld_handler(int s) {
 }
 
 int main(int argc, char *argv[]) {
-    traverseOptions(node1);
+    traverseNode(node1);
+    traverseNode(node2);
+
 
 
 /*
