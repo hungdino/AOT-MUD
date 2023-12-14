@@ -1,3 +1,5 @@
+gcc -I../lib -g -O2 -D_REENTRANT -Wall -o client client.o -L../lib -lunp -lpthread
+
 include ../Make.defines
 
 PROGS =	client server
