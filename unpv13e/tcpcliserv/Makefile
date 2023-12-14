@@ -13,4 +13,4 @@ server:	server.o
 
 # Clean rule
 clean:
-    	rm -f ${PROGS} ${CLEANFILES}
+		rm -f ${PROGS} ${CLEANFILES}
