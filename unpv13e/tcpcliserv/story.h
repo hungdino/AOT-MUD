@@ -74,7 +74,7 @@ void traverseNode(StoryNode node) {
         }
     }
     printf("\n");
-
+    
     for (int i = 0; i < MAX_CHARACTERS_PER_NODE; ++i) {
         char (*options)[OPTION_DESC_LENGTH]; // Pointer to the options array
         if (strcmp(node.characterArray[i], "Eren") == 0) {
