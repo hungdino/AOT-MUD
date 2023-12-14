@@ -5,41 +5,38 @@
 #define STORY_LENGTH 1024
 #define ID_LENGTH 32
 
-// 選項結構
-typedef struct {
-    char description[OPTION_DESC_LENGTH];
-    int nextNodeIndex;
-} Option;
-
-// 定義角色結構
-typedef struct {
-    char ID[ID_LENGTH];
-    Option options[MAX_OPTIONS_PER_CHARACTER];
-    int numberOfOptions;
-} Character;
-
 // 故事節點結構
 typedef struct {
-    int nodeSeriesNum; // 節點編號
-    char story[STORY_LENGTH]; // 故事提示
-    Character characters[MAX_CHARACTERS_PER_NODE]; // 儲存角色和各自的選項
-    int numberOfCharacters; // 
+    int     nodeSeriesNum;                                          // 節點編號
+    char    story[STORY_LENGTH];                                    // 故事提示
+    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
+    char    Eren[MAX_OPTIONS_PER_CHARACTER][OPTION_DESC_LENGTH];    // 儲存艾連的選項
+    char    Mikasa[MAX_OPTIONS_PER_CHARACTER][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
+    char    Armin[MAX_OPTIONS_PER_CHARACTER][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
 } StoryNode;
 
-/*
-// 全局變數
 StoryNode node1 = {
-    "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回，艾連自己從巨人身體中走了出來，並表示他想起了父親曾告訴他所有事情只要回到家裡的地下室就會有所解答。",
-    {
-        {
-            { // 角色1的選項
-                {"聽從阿爾敏的選擇", 2},
-                {"要求前往地下室", 3}
-            },
-            2  // 角色1有2个选项
-        },
-        // 如果需要，可继续添加其他角色及其选项
+    1, // nodeSeriesNum
+    "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回，艾連自己從巨人身體中走了出來，並表示他想起了父親曾告訴他所有事情只要回到家裡的地下室就會有所解答。", // story
+    {"Eren", "Mikasa", "Armin"}, // characterArray
+    {   // 艾連的選項
+        "聽從阿爾敏的選擇",
+        "要求前往地下室",
+        "要求回到軍團"
     },
-    1  // 这个节点有1个角色
+    {   // 米卡莎的選項
+        "聽從阿爾敏的選擇",
+        "聽從艾倫的選擇",
+        "阿巴阿巴這個不是我的艾倫，砍砍砍"
+    },
+    {   // 阿爾敏的選項
+        "決定前往地下室",
+        "真的可以說服駐紮軍團嗎？我們討論一下",
+        "表示自己一定可以說服駐紮軍團，回到軍團繼續下一步動作。"
+    }
 };
+
+/*
+printf("Node %d: %s\n", node1.nodeSeriesNum, node1.story);
+printf("Eren's Options: %s, %s, %s\n", node1.Eren[0], node1.Eren[1], node1.Eren[2]);
 */
