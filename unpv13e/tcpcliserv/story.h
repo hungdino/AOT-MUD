@@ -73,6 +73,7 @@ void traverseNode(StoryNode node) {
                 printf("阿爾敏 ");
         }
     }
+    printf("\n");
 
     for (int i = 0; i < MAX_CHARACTERS_PER_NODE; ++i) {
         char (*options)[OPTION_DESC_LENGTH]; // Pointer to the options array
