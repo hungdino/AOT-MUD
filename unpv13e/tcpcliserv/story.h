@@ -39,7 +39,7 @@ StoryNode node1 = {
 StoryNode node2 = {
     2, // nodeSeriesNum
     "阿爾敏表示自己一定可以說服駐紮軍團，在他發表的言論下，果真令駐紮軍團大部分的士兵動搖了，但膽小如鼠的指揮官奇茲已經失去思考的能力，仍執意要下令攻擊，就在千鈞一髮之際，駐紮兵團的總司令達特 · 皮克希斯來到，並制止了奇茲。在聽完艾連所知的所有關於巨人化的情報後，達特決定採用阿爾敏的建議，要利用巨人化後的艾連將托洛斯特區被摧毀的城門洞口補起來。", // story
-    {"Eren", "None", "None"}, // characterArray
+    {"Armin", "None", "None"}, // characterArray
     {   // 艾連的選項
         "None",
         "None",
@@ -74,7 +74,7 @@ void traverseNode(StoryNode node) {
         }
     }
     printf("\n");
-    
+
     for (int i = 0; i < MAX_CHARACTERS_PER_NODE; ++i) {
         char (*options)[OPTION_DESC_LENGTH]; // Pointer to the options array
         if (strcmp(node.characterArray[i], "Eren") == 0) {
