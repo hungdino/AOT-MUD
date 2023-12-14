@@ -14,7 +14,7 @@
 #define MAX_CLIENTS 2
 #define BUFFER_SIZE 1024
 #define MAX_ID_LEN 51
-//abc
+
 // Function to get client's IP address
 char* get_client_ip(struct sockaddr_in cli_addr) {
     return inet_ntoa(cli_addr.sin_addr);
@@ -130,9 +130,7 @@ void sigchld_handler(int s) {
 int main(int argc, char *argv[]) {
     int sockfd, newsockfd, portno;
     socklen_t clilen;
-    char buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
-    int n;
     pid_t pid;
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
