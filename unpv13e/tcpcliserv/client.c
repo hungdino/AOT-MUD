@@ -9,6 +9,24 @@ char id[MAXLINE];
 /* the following two functions use ANSI Escape Sequence */
 /* refer to https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797 */
 
+/*
+Step 1
+處理 argv[1] = IP，argv[2] 當作 ID
+Step 2
+收 Server 送來的歡迎訊息（e.g. [ID] 您好，歡迎來到 [酷炫的名字]，目前有 n 個玩家等待中，您是第 n+1 位進到遊戲室，其中有 n-m 位想要進入遊戲， m 位想要觀戰。）
+Step 3
+給玩家兩個選項 (1) 參賽 (2) 觀賽，收使用者選項，檢查選項
+Step 4
+送使用者選項到 Server
+Step 5
+收 Server 訊息，可能是 1. 等待更多人加入，持續觀察 Server 有沒有送新的訊息 2. 遊戲開始，分配角色的訊息，開始處理收章節劇情 - 顯示劇情 - 收選項(or None) - 顯示選項 - 送選項給 Server
+Step 6
+在過程中不斷檢查 Server 送來的訊息有沒有包含特定關鍵字
+1. 遊戲開始
+2. 遊戲異常終止
+3. 遊戲正常終止
+*/
+
 
 void clr_scr() {
 	printf("\x1B[2J");
