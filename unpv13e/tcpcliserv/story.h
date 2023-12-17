@@ -5,6 +5,30 @@
 #define STORY_LENGTH 1024
 #define ID_LENGTH 32
 
+int decideNextNode(int currentNode, int numOfNodePlayed){
+    int erenChose[] = [1, 2, 1, 2, 2, 1, -1];
+    int mikasaChose[] = [1, 2, 1, 1, -1, 1];
+    int arminChose[] = [1, 2, 2, 1, -1, -1, 2];
+    
+    int nextNode;
+
+    switch (currentNode) {
+        case 1:
+            if(erenChose[numOfNodePlayed] == 1 && mikasaChose[numOfNodePlayed] == 1 && arminChose[numOfNodePlayed] == 3)
+                nextNode = 2; // 正解
+            else{
+                nextNode = 22;
+            }
+        case 2:
+        case 3:
+        case 4:
+        
+        default:
+            nextNode = -1; // 回報錯誤：章節不存在
+            
+    return nextNode;
+}
+
 // 故事節點結構
 typedef struct {
     int     nodeSeriesNum;                                          // 節點編號
@@ -33,7 +57,7 @@ StoryNode Main_node1 = {
         "決定前往地下室",
         "真的可以說服駐紮軍團嗎？我們討論一下",
         "表示自己一定可以說服駐紮軍團，回到軍團繼續下一步動作。"
-    }
+    } // 1, 1, 3 == 正解？
 };
 
 StoryNode Main_node2 = {
