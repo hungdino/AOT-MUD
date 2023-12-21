@@ -137,19 +137,61 @@ int decideNextNode(int currentNode, int numOfNodePlayed) {
         }
         break;
     case 10:
-        if (erenChose[numOfNodePlayed] == 1) {
-            if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
-                nextNode = 40;//TE 死亡米咖殺有來
-            else if (erenChose[3] == 3)
-                nextNode = 41;//TE 死亡
-            else
-                nextNode = 55;//TE
-        }
-        else if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 20;//NE1 米卡莎死亡
+        if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed] && mikasaChose[numOfNodePlayed] == arminChose[numOfNodePlayed]) {
+            if (erenChose[numOfNodePlayed] == 3) {
+                nextNode = 20; //NE1 撤退
+            }
+            else {
+                nextNode = 7;
+            }
         }
         else {
-            nextNode = 99;//HE
+            nextNode = 15;//BE一般
+        }
+    case 11:
+        if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed]) {
+            if (erenChose[numOfNodePlayed]==3) {
+                nextNode = 15;//BE一般
+                }
+            else {
+                nextNode = 12;
+            }
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;
+    case 12:
+        if (erenChose[numOfNodePlayed] == 3 || mikasaChose[numOfNodePlayed] == 3 || arminChose[numOfNodePlayed] != 3) {
+            nextNode = 1207;
+        }//TE2地下室
+        else if (erenChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
+            nextNode = 2;//回軍團
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;//解釋一下這裡，每個人開門都有機率，要艾倫米卡莎其中一個開成功，阿爾敏不開門才能把門打開，機率失敗默認二
+    case 13:
+        if (erenChose[numOfNodePlayed] == 1) {
+            nextNode = 6;
+        }//TE2地下室
+        else if (mikasaChose[numOfNodePlayed] == 1) {
+            nextNode = 8;//回主點6
+        }
+        else if (mikasaChose[numOfNodePlayed] == 2 && arminChose[numOfNodePlayed] == 2) {
+            nextNode = 14;//冰長
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;
+    case 14:
+        if (mikasaChose[numOfNodePlayed] == 1) {
+            nextNode = 15;//BE一般
+        }
+        else {
+            nextNode = 22;//NE 兵長
         }
         break;
     default:
@@ -373,9 +415,9 @@ int decideNextNode(int currentNode, int numOfNodePlayed) {
             "放棄原計劃，轉而投入保護同伴的戰鬥"
         },
         {   // 米卡莎的選項
+            "迅速組織一支後援小隊，支援正面戰場",
             "全力保護艾倫，確保他能夠安全到達目的地",
-            "利用環境進行隱蔽式攻擊",
-            "迅速組織一支後援小隊，支援正面戰場"
+            "掩護附近的同伴撤退"
         },
         {   // 阿爾敏的選項
             "發送信號彈請求援助",
@@ -422,8 +464,8 @@ int decideNextNode(int currentNode, int numOfNodePlayed) {
         },
         {   // 阿爾敏的選項
             "安排與軍團的聯繫",
-            "拿出鐵絲敲開門",
-            "勸說艾倫放棄地下室"
+            "勸說艾倫放棄地下室",
+            "拿出鐵絲敲開門"
         }
     };
 
@@ -443,8 +485,8 @@ int decideNextNode(int currentNode, int numOfNodePlayed) {
         },
         {   // 阿爾敏的選項
             "試圖直接接近並干預艾倫",
-            "協調其他士兵建立防禦陣線",
-            "勸說團長繼續計畫"//(正確)
+            "協調其他士兵建立防禦陣線",//(正確)
+            "勸說團長繼續計畫"
         }
     };
 
