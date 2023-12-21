@@ -13,7 +13,7 @@ Step 6（遊戲開始）
 1. 遊戲開始
 2. 遊戲終止
 
-進遊戲
+進遊戲 (child process)
 0. 宣告選項 array
 1. 從 struct node 1 取出故事 & 選項 -> 廣播故事
 2. 送選項給 client 1
