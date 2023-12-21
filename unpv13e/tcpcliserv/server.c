@@ -1,3 +1,34 @@
+/*
+對應 Client
+Step 1
+Step 2
+Server 送歡迎訊息（e.g. [ID] 您好，歡迎來到 [酷炫的名字]，目前有 n 個玩家等待中，您是第 n+1 位進到遊戲室，其中有 n-m 位想要進入遊戲， m 位想要觀戰。）
+Step 3
+Step 4
+收 (1) 參賽 (2) 觀賽
+Step 5
+Server 送訊息，可能是 1. 等待更多人加入 2. 遊戲開始，分配角色的訊息，開始處理收章節劇情 - 顯示劇情 - 收選項(or None) - 顯示選項 - 送選項給 Server
+Step 6（遊戲開始）
+在過程中不斷檢查 Server 送來的訊息有沒有包含特定關鍵字
+1. 遊戲開始
+2. 遊戲終止
+
+進遊戲
+1. 從 struct node 1 取出故事 & 選項 -> 廣播故事
+2. 送選項給 client 1
+3. 收 client 1 選項
+4. 送選項給 client 2
+5. 收 client 2 選項
+4. 送選項給 client 3
+4. 收 client 3 選項
+5. call function decideNextNode
+6. 進下一個 Node
+7. if node == 結局 node
+8. 廣播結局，讓 client 切斷連線
+*/
+
+
+
 #include "story.h"
 #include "unp.h"
 #include <stdio.h>
