@@ -131,21 +131,36 @@ int main(int argc, char *argv[]) {
     clilen = sizeof(cli_addr);
 
     while (1) {
-        // Accept incoming connection
         newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
         if (newsockfd < 0) 
             error("ERROR on accept");
 
         total_clients++;
-        send_welcome_message(newsockfd, total_clients, players, spectators);
-        
-        // Create a new thread for each client
-        // or use fork??
-        pthread_t thread_id;
-        int *new_sock = malloc(sizeof(int));
-        *new_sock = newsockfd;
-        if (pthread_create(&thread_id, NULL, client_thread, (void*) new_sock) < 0) {
-            error("ERROR creating thread");
+        send_welcome_message(newsockfd, total_clients, total_clients, players, spectators);
+
+        // Create a child process to handle each client
+        pid_t pid = fork();
+        if (pid < 0) {
+            error("ERROR on fork");
+        }
+        if (pid == 0) { // Child process
+            int erenChose[MAX_NODE] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
+            int mikasaChose[MAX_NODE] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+            int arminChose[MAX_NODE] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+            
+            
+            while(){
+                //select
+            }
+            
+            
+            
+            
+            close(sockfd);
+            handle_client_interaction(newsockfd);
+            exit(0);
+        } else { // Parent process
+            close(newsockfd);
         }
     }
 
@@ -173,10 +188,12 @@ void error(const char *msg) {
 
 void handle_client_interaction(int sockfd) {
     //receiving choices, sending game updates, etc.
+    
 }
 void game_process(int client_sock, struct node* game_node){
-
-
+    int currentNode;
+    int nextNode;
+    nextNode = decideNextNode(currentNode, currentNode);
 }
 
 
@@ -246,21 +263,24 @@ client_socks: Array of client socket file descriptors.
 num_clients: Number of clients to broadcast the story to.
 story: The story text to be broadcasted.
 */
-int send_options_and_receive_choice(int client_sock, const char* options);
+int send_options_and_receive_choice(int client_sock, const char* options){
 /*
 client_sock: The socket file descriptor for the client.
 options: The options to be presented to the client.
 */
-struct node* decide_next_node(struct node* current_node, int* choices, int num_choices);
-/*
-current_node: The current node in the game story.
-choices: Array of choices made by clients.
-num_choices: Number of choices made.
-*/
-int is_ending_node(struct node* game_node);
+
+}
+
+int is_ending_node(struct node* game_node){
 /*
 game_node: The current game story node to check.
 */
+    if(game_node.nodeSeriesNum >14 && game_node.nodeSeriesNum != 51 && game_node.nodeSeriesNum != 52){
+        // 送最後一個劇情
+        // 要求 client 給玩家退出或重連
+        broadcast_game_ending();
+    }
+}
 void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
 /*
 client_socks: Array of client socket file descriptors.

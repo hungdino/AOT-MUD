@@ -6,7 +6,7 @@
 #define ID_LENGTH 32
 #define MAX_NODE 14
 
-int decideNextNode(int currentNode, int numOfNodePlayed) {
+int decideNextNode(int currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
     int erenChose[MAX_NODE] = [1, 2, 1, 2, 2, 1, -1, 1, 2, ]; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
     int mikasaChose[MAX_NODE] = [1, 2, 1, 1, -1, 1];
     int arminChose[MAX_NODE] = [1, 2, 2, 1, -1, -1, 2];
@@ -207,8 +207,8 @@ int decideNextNode(int currentNode, int numOfNodePlayed) {
     default:
         nextNode = -1; // 回報錯誤：章節不存在
 
-        return nextNode;
     }
+    return nextNode;
 }
 
 // 故事節點結構
