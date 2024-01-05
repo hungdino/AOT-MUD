@@ -4,10 +4,27 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+
 char id[MAXLINE];
 
-/* the following two functions use ANSI Escape Sequence */
-/* refer to https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797 */
+const char *ascii_art = 
+"   _______ __________________ _______  _______  _           _______  _            \n"
+"  (  ___  )\__   __/\__   __/(  ___  )(  ____ \| \    /\   (  ___  )( (    /| \n"
+"  | (   ) |   ) (      ) (   | (   ) || (    \/|  \  / /   | (   ) ||  \  ( | \n"
+"  | (___) |   | |      | |   | (___) || |      |  (_/ /    | |   | ||   \ | | \n"
+"  |  ___  |   | |      | |   |  ___  || |      |   _ (     | |   | || (\ \) |  \n"
+"  | (   ) |   | |      | |   | (   ) || |      |  ( \ \    | |   | || | \   | \n"
+"  | )   ( |   | |      | |   | )   ( || (____/\|  /  \ \   | (___) || )  \  | \n"
+"  |/     \|   )_(      )_(   |/     \|(_______/|_/    \/   (_______)|/    )_) \n"
+"\n"
+"                  ___________________________ _______  _       \n"
+"                  \__   __/\__   __/\__   __/(  ___  )( (    /|\n"
+"                    ) (      ) (      ) (   | (   ) ||  \  ( |\n"
+"                    | |      | |      | |   | (___) ||   \ | |\n"
+"                    | |      | |      | |   |  ___  || (\ \) |\n"
+"                    | |      | |      | |   | (   ) || | \   |\n"
+"                    | |   ___) (___   | |   | )   ( || )  \  |\n"
+"                    )_(   \_______/   )_(   |/     \||/    )_)";
 
 
 void clr_scr() {
@@ -33,8 +50,10 @@ void xchg_data(FILE *fp, int sockfd) {
     printf("recv: %s", recvline); 
     stdineof = 0;
     peer_exit = 0;
-    printf("choose 1 or 2\n"); 
-  
+     clr_scr();
+     printf("%s\n", ascii_art); 
+    printf("choose 1 to join the game  or 2 to be spectator\n"); 
+    
     clr_scr();
     for ( ; ; ) { 
         FD_ZERO(&rset);
@@ -137,4 +156,4 @@ main(int argc, char **argv)
 	xchg_data(stdin, sockfd);		/* do it all */
 
 	exit(0);
-} 
+}
