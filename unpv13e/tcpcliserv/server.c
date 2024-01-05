@@ -27,9 +27,6 @@ Step 6（遊戲開始）
 7. if node == 結局 node
 8. 廣播結局，讓 client 切斷連線
 */
-
-
-
 #include "story.h"
 #include "unp.h"
 #include <stdio.h>
@@ -41,11 +38,148 @@ Step 6（遊戲開始）
 #include <netinet/in.h>
 #include <signal.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 
 
-#define MAX_CLIENTS 2
+// Define constants and function prototypes
+#define MAX_CLIENTS 10
 #define BUFFER_SIZE 1024
-#define MAX_ID_LEN 51
+#define MAX_ID_LEN 64
+
+void error(const char *msg);
+void handle_client_interaction(int sockfd);
+void game_process(int client_sock, struct node* game_node);
+char* get_client_ip(struct sockaddr_in cli_addr);
+void send_message(int client_sock, const char* msg);
+void sigchld_handler(int s);
+
+void *client_thread(void *socket_desc);
+
+void send_welcome_message(int client_sock, int client_number, int players_waiting, int spectators_waiting);
+/*
+client_sock: The socket file descriptor for the client.
+client_number: The sequential number of the client (n+1 in your example).
+total_players: Total number of players currently connected.
+players_waiting: Number of players waiting to join the game.
+spectators_waiting: Number of spectators waiting to watch the game.
+*/
+
+int receive_player_choice(int client_sock);
+/*
+client_sock: The socket file descriptor for the client.
+*/
+void send_game_status_message(int client_sock, const char* message);
+/*
+client_sock: The socket file descriptor for the client.
+message: The status message to be sent (e.g., waiting for more players, game starting, etc.).
+*/
+void handle_game_story(int client_sock, struct node* game_node);
+/*
+client_sock: The socket file descriptor for the client.
+game_node: A pointer to the current game story node.
+*/
+void broadcast_story(int* client_socks, int num_clients, const char* story);
+/*
+client_socks: Array of client socket file descriptors.
+num_clients: Number of clients to broadcast the story to.
+story: The story text to be broadcasted.
+*/
+int send_options_and_receive_choice(int client_sock, const char* options);
+/*
+client_sock: The socket file descriptor for the client.
+options: The options to be presented to the client.
+*/
+struct node* decide_next_node(struct node* current_node, int* choices, int num_choices);
+/*
+current_node: The current node in the game story.
+choices: Array of choices made by clients.
+num_choices: Number of choices made.
+*/
+int is_ending_node(struct node* game_node);
+/*
+game_node: The current game story node to check.
+*/
+void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
+/*
+client_socks: Array of client socket file descriptors.
+num_clients: Number of clients to broadcast the ending message to.
+ending_message: The ending message of the game.
+*/
+
+int main(int argc, char *argv[]) {
+    int sockfd, newsockfd, portno;
+    struct sockaddr_in serv_addr, cli_addr;
+    socklen_t clilen;
+    int total_clients = 0, players = 0, spectators = 0;
+
+    // Create socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) 
+       error("ERROR opening socket");
+
+    // Bind socket to a port
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    portno = SERV_PORT; // Replace SERV_PORT with your port number
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portno);
+    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
+              error("ERROR on binding");
+
+    // Listen for incoming connections
+    listen(sockfd, MAX_CLIENTS);
+    clilen = sizeof(cli_addr);
+
+    while (1) {
+        // Accept incoming connection
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+        if (newsockfd < 0) 
+            error("ERROR on accept");
+
+        total_clients++;
+        send_welcome_message(newsockfd, total_clients, players, spectators);
+        
+        // Create a new thread for each client
+        // or use fork??
+        pthread_t thread_id;
+        int *new_sock = malloc(sizeof(int));
+        *new_sock = newsockfd;
+        if (pthread_create(&thread_id, NULL, client_thread, (void*) new_sock) < 0) {
+            error("ERROR creating thread");
+        }
+    }
+
+    close(sockfd);
+    return 0;
+}
+
+void *client_thread(void *socket_desc) {
+    int client_sock = *(int*)socket_desc;
+    free(socket_desc);
+
+    send_welcome_message(client_sock, total_clients, players, spectators);
+    int choice = receive_player_choice(client_sock);
+    handle_client_interaction(client_sock);
+    close(client_sock);
+    return 0;
+}
+
+void error(const char *msg) {
+    perror(msg);
+    exit(1);
+}
+
+
+
+void handle_client_interaction(int sockfd) {
+    //receiving choices, sending game updates, etc.
+}
+void game_process(int client_sock, struct node* game_node){
+
+
+}
+
+
 
 // Function to get client's IP address
 char* get_client_ip(struct sockaddr_in cli_addr) {
@@ -69,89 +203,6 @@ void send_message(int client_sock, const char* msg) {
     }
 }
 
-
-void error(const char *msg) {
-    perror(msg);
-    exit(1);
-}
-
-void chatroom(int client1, int client2, char* name1, char* name2) {
-    char buffer[BUFFER_SIZE];
-    ssize_t nread;
-    fd_set readfds;
-    int max_sd;
-    char message[BUFFER_SIZE + 50]; // Extra space for client name and formatting
-    int client1_connected = 1, client2_connected = 1; // Track if clients are connected
-    int to_leave_msg_not_sent = 1;
-    int first_to_leave = 1;
-    while(client1_connected || client2_connected) {
-        FD_ZERO(&readfds);
-        if (client1_connected) FD_SET(client1, &readfds);
-        if (client2_connected) FD_SET(client2, &readfds);
-        max_sd = (client1 > client2 ? client1 : client2) + 1;
-
-        // Wait for an activity on one of the sockets
-        if (select(max_sd, &readfds, NULL, NULL, NULL) < 0) {
-            perror("select error");
-            exit(EXIT_FAILURE);
-        }
-
-        // Handle activity from client1
-        if (client1_connected && FD_ISSET(client1, &readfds)) {
-            nread = recv(client1, buffer, BUFFER_SIZE, 0);
-            if (nread <= 0) {
-                client1_connected = 0;
-                char disconnect_message[BUFFER_SIZE];
-                snprintf(disconnect_message, sizeof(disconnect_message), "(%s left the room. Press Ctrl+D to leave.)\n", name1);
-                if (to_leave_msg_not_sent)
-                {
-                    first_to_leave = 1;
-                    send_message(client2, disconnect_message);
-                    to_leave_msg_not_sent = 0;
-                }
-                continue;
-            }
-            buffer[nread] = '\0'; // Ensure null-termination
-            snprintf(message, sizeof(message), "(%s) %s", name1, buffer); // Prepend client1 name
-            send(client2, message, strlen(message), 0);
-        }
-
-        // Handle activity from client2
-        if (client2_connected && FD_ISSET(client2, &readfds)) {
-            nread = recv(client2, buffer, BUFFER_SIZE, 0);
-            if (nread <= 0) {
-                client2_connected = 0;
-                char disconnect_message[BUFFER_SIZE];
-                snprintf(disconnect_message, sizeof(disconnect_message), "(%s left the room. Press Ctrl+D to leave.)\n", name2);
-                if (to_leave_msg_not_sent)
-                {
-                    first_to_leave = 2;
-                    send_message(client1, disconnect_message);
-                    to_leave_msg_not_sent = 0;
-                }
-                continue;
-            }
-            buffer[nread] = '\0'; // Ensure null-termination
-            snprintf(message, sizeof(message), "(%s) %s", name2, buffer); // Prepend client2 name
-            send(client1, message, strlen(message), 0);
-        }
-    }
-    
-    
-    char disconnect_message[BUFFER_SIZE];
-    if(first_to_leave == 1){
-        snprintf(disconnect_message, sizeof(disconnect_message), "(%s left the room)\n", name2);
-        send_message(client1, disconnect_message);
-    }else{
-        snprintf(disconnect_message, sizeof(disconnect_message), "(%s left the room)\n", name1);
-        send_message(client2, disconnect_message);
-    }
-    // Cleanup
-    if (client1_connected) close(client1);
-    if (client2_connected) close(client2);
-}
-
-
 void sigchld_handler(int s) {
     // waitpid() might overwrite errno, so we save and restore it:
     int saved_errno = errno;
@@ -159,130 +210,60 @@ void sigchld_handler(int s) {
     errno = saved_errno;
 }
 
-int main(int argc, char *argv[]) {
-    traverseNode(node1);
-    traverseNode(node2);
 
 
 
+void send_welcome_message(int client_sock, int client_number, int players_waiting, int spectators_waiting){
 /*
-    int sockfd, newsockfd, portno;
-    socklen_t clilen;
-    struct sockaddr_in serv_addr, cli_addr;
-    pid_t pid;
-
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) 
-       error("ERROR opening socket");
-
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    portno = SERV_PORT+3;
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno);
-
-    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
-              error("ERROR on binding");
-    printf("IP binded.\n");
-
-    listen(sockfd,5);
-
-    clilen = sizeof(cli_addr);
-
-    // SIGCHLD 
-    struct sigaction sa;
-    sa.sa_handler = sigchld_handler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(1);
-    }
-
-    // Global array to hold client sockets
-    int client_sockets[MAX_CLIENTS] = {0};
-    int client_count = 0;
-
-    char client1_ip[INET_ADDRSTRLEN], client2_ip[INET_ADDRSTRLEN]; // To store client IP addresses
-    struct sockaddr_in client_addr[MAX_CLIENTS]; // To store client addresses
-
-    char client_ids[MAX_CLIENTS][MAX_ID_LEN]; // Array to store client IDs
-
-    while(1) {
-        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-        if (newsockfd < 0) {
-            error("ERROR on accept");
-        }
-        printf("Connection accepted.\n");
-
-        client_addr[client_count].sin_addr = cli_addr.sin_addr; // Store client's IP
-
-        // Read the client's ID
-        ssize_t read_bytes = recv(newsockfd, client_ids[client_count], MAX_ID_LEN - 1, 0);
-        if (read_bytes >= 0) {
-            if(client_count == 0){
-                client_ids[client_count][read_bytes] = '\0'; // Null-terminate the string
-                printf("%s is coming.\n", client_ids[client_count]);
-                send_message(newsockfd, "You are the 1st user. Wait for the second one!\n");
-                printf("msg to first user sent.\n");
-                client_sockets[client_count] = newsockfd; // Add the new client to the array
-                client_count++;
-            }
-            else if(client_count == 1){
-                client_ids[client_count][read_bytes] = '\0'; // Null-terminate the string
-                printf("%s is coming.\n", client_ids[client_count]);
-                send_message(newsockfd, "You are the 2nd user\n");
-                printf("msg to second user sent.\n");
-                client_sockets[client_count] = newsockfd; // Add the new client to the array
-                client_count++;
-            }
-        } else {
-            // Handle read error
-            printf("Couldn't read the id of the user.\n");
-        }
-
-        
-        if (client_count == 2) {            
-            // Get clients' IP addresses
-            strcpy(client1_ip, get_client_ip(client_addr[0]));
-            strcpy(client2_ip, get_client_ip(client_addr[1]));
-
-            // Send info about the second client to the first client
-            char msg_to_first[1024];
-            sprintf(msg_to_first, "The second user is %s from %s\n", client_ids[1], client2_ip);
-            send_message(client_sockets[0], msg_to_first);
-
-            // Send info about the first client to the second client
-            char msg_to_second[1024];
-            sprintf(msg_to_second, "The first user is %s from %s\n", client_ids[0], client1_ip);
-            send_message(client_sockets[1], msg_to_second);
-            pid = fork();
-            if (pid < 0) {
-                error("ERROR on fork");
-            }
-            if (pid == 0) {
-                // Child process to handle chatroom
-                close(sockfd);
-
-                // Call chatroom with client sockets and names
-                printf("Two users entering chatroom\n");
-                chatroom(client_sockets[0], client_sockets[1], client_ids[0], client_ids[1]);
-
-                exit(0);
-            } else {
-                // Parent process closes descriptors and resets the count
-                close(client_sockets[0]);
-                close(client_sockets[1]);
-                client_count = 0;
-            }
-        }
-
-    }
-
-    close(sockfd);
+client_sock: The socket file descriptor for the client.
+client_number: The sequential number of the client (n+1 in your example).
+total_players: Total number of players currently connected.
+players_waiting: Number of players waiting to join the game.
+spectators_waiting: Number of spectators waiting to watch the game.
 */
-    return 0; 
+    char welcome_msg[BUFFER_SIZE];
+    snprintf(welcome_msg, BUFFER_SIZE, "[ID] 您好，歡迎來到 [酷炫的名字]，目前有 %d 個玩家等待中，您是第 %d 位進到遊戲室，其中有 %d 位想要進入遊戲， %d 位想要觀戰。\n", total_clients, client_number, players, spectators);
+    send(client_sock, welcome_msg, strlen(welcome_msg), 0);
 }
 
-
-
+int receive_player_choice(int client_sock);
+/*
+client_sock: The socket file descriptor for the client.
+*/
+void send_game_status_message(int client_sock, const char* message);
+/*
+client_sock: The socket file descriptor for the client.
+message: The status message to be sent (e.g., waiting for more players, game starting, etc.).
+*/
+void handle_game_story(int client_sock, struct node* game_node);
+/*
+client_sock: The socket file descriptor for the client.
+game_node: A pointer to the current game story node.
+*/
+void broadcast_story(int* client_socks, int num_clients, const char* story);
+/*
+client_socks: Array of client socket file descriptors.
+num_clients: Number of clients to broadcast the story to.
+story: The story text to be broadcasted.
+*/
+int send_options_and_receive_choice(int client_sock, const char* options);
+/*
+client_sock: The socket file descriptor for the client.
+options: The options to be presented to the client.
+*/
+struct node* decide_next_node(struct node* current_node, int* choices, int num_choices);
+/*
+current_node: The current node in the game story.
+choices: Array of choices made by clients.
+num_choices: Number of choices made.
+*/
+int is_ending_node(struct node* game_node);
+/*
+game_node: The current game story node to check.
+*/
+void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
+/*
+client_socks: Array of client socket file descriptors.
+num_clients: Number of clients to broadcast the ending message to.
+ending_message: The ending message of the game.
+*/
