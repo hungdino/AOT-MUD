@@ -43,74 +43,40 @@ Step 6（遊戲開始）
 
 // Define constants and function prototypes
 #define MAX_CLIENTS 10
+#define MAX_PLAYERS 3
+#define MAX_SPECATORS 7
+#define MAX_NODE 15
 #define BUFFER_SIZE 1024
 #define MAX_ID_LEN 64
+#define TO_PLAY 1
+#define TO_SPECTATE 2
+// 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
+#define CHOICE_NOT_AVAILABLE 0
+#define CHOICE_1 1
+#define CHOICE_2 2
+#define CHOICE_3 3
+#define CHOICE_INITIAL -1
 
 void error(const char *msg);
 void handle_client_interaction(int sockfd);
-void game_process(int client_sock, struct node* game_node);
+void game_process(int* players, int* spectators, int total_players, int total_spectators);
 char* get_client_ip(struct sockaddr_in cli_addr);
 void send_message(int client_sock, const char* msg);
 void sigchld_handler(int s);
-
-void *client_thread(void *socket_desc);
-
 void send_welcome_message(int client_sock, int client_number, int players_waiting, int spectators_waiting);
-/*
-client_sock: The socket file descriptor for the client.
-client_number: The sequential number of the client (n+1 in your example).
-total_players: Total number of players currently connected.
-players_waiting: Number of players waiting to join the game.
-spectators_waiting: Number of spectators waiting to watch the game.
-*/
-
 int receive_player_choice(int client_sock);
-/*
-client_sock: The socket file descriptor for the client.
-*/
 void send_game_status_message(int client_sock, const char* message);
-/*
-client_sock: The socket file descriptor for the client.
-message: The status message to be sent (e.g., waiting for more players, game starting, etc.).
-*/
 void handle_game_story(int client_sock, struct node* game_node);
-/*
-client_sock: The socket file descriptor for the client.
-game_node: A pointer to the current game story node.
-*/
 void broadcast_story(int* client_socks, int num_clients, const char* story);
-/*
-client_socks: Array of client socket file descriptors.
-num_clients: Number of clients to broadcast the story to.
-story: The story text to be broadcasted.
-*/
 int send_options_and_receive_choice(int client_sock, const char* options);
-/*
-client_sock: The socket file descriptor for the client.
-options: The options to be presented to the client.
-*/
 struct node* decide_next_node(struct node* current_node, int* choices, int num_choices);
-/*
-current_node: The current node in the game story.
-choices: Array of choices made by clients.
-num_choices: Number of choices made.
-*/
 int is_ending_node(struct node* game_node);
-/*
-game_node: The current game story node to check.
-*/
 void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
-/*
-client_socks: Array of client socket file descriptors.
-num_clients: Number of clients to broadcast the ending message to.
-ending_message: The ending message of the game.
-*/
 
 int main(int argc, char *argv[]) {
     int sockfd, newsockfd, portno;
     struct sockaddr_in serv_addr, cli_addr;
     socklen_t clilen;
-    int total_clients = 0, players = 0, spectators = 0;
 
     // Create socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -130,52 +96,62 @@ int main(int argc, char *argv[]) {
     listen(sockfd, MAX_CLIENTS);
     clilen = sizeof(cli_addr);
 
+    int players[MAX_PLAYERS];
+    int spectators[MAX_CLIENTS - MAX_PLAYERS];
+    int total_clients = 0;
+    int total_players = 0;
+    int total_spectators = 0;
+
     while (1) {
         newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-        if (newsockfd < 0) 
-            error("ERROR on accept");
-
+        if (newsockfd < 0) {
+            perror("ERROR on accept");
+            exit(1);
+        }
+        send_welcome_message(newsockfd, total_clients, total_players, total_spectators);
+        int player_or_spectator = receive_player_choice(newsockfd);
+        if (player_or_spectator == TO_PLAY) {
+            players[total_players] = newsockfd;
+            total_players++;
+        } else if (player_or_spectator == TO_SPECTATE && total_clients < MAX_SPECATORS) {
+            spectators[total_spectators] = newsockfd;
+            total_spectators++;
+        } else {
+            // Too many clients connected or invalid choice
+        }
         total_clients++;
-        send_welcome_message(newsockfd, total_clients, total_clients, players, spectators);
+        struct sigaction sa;
+        sa.sa_handler = sigchld_handler; // reap all dead processes
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = SA_RESTART;
+        if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+            perror("sigaction");
+            exit(1);
+        }
+        if (total_players == MAX_PLAYERS) {
+                pid_t pid = fork();
+                if (pid < 0) {
+                    perror("ERROR on fork");
+                    exit(1);
+                }
+                if (pid == 0) {
+                    // This is the child process
+                    // Here you can handle the game with the players and spectators
+                    // You can use the arrays 'players' and 'spectators' which contain the socket descriptors
+                    // After handling the game, the child process should exit
+                    game_process(players, spectators, total_players, total_spectators);
+                    exit(0);
+                }
 
-        // Create a child process to handle each client
-        pid_t pid = fork();
-        if (pid < 0) {
-            error("ERROR on fork");
-        }
-        if (pid == 0) { // Child process
-            int erenChose[MAX_NODE] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
-            int mikasaChose[MAX_NODE] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-            int arminChose[MAX_NODE] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
-            
-            
-            while(){
-                //select
-            }
-            
-            
-            
-            
-            close(sockfd);
-            handle_client_interaction(newsockfd);
-            exit(0);
-        } else { // Parent process
-            close(newsockfd);
-        }
+                // This is the parent process
+                // Reset the players and spectators for the next game
+                total_clients = 0;
+                total_players = 0;
+                total_spectators = 0;
+        }       
     }
 
     close(sockfd);
-    return 0;
-}
-
-void *client_thread(void *socket_desc) {
-    int client_sock = *(int*)socket_desc;
-    free(socket_desc);
-
-    send_welcome_message(client_sock, total_clients, players, spectators);
-    int choice = receive_player_choice(client_sock);
-    handle_client_interaction(client_sock);
-    close(client_sock);
     return 0;
 }
 
@@ -190,10 +166,24 @@ void handle_client_interaction(int sockfd) {
     //receiving choices, sending game updates, etc.
     
 }
-void game_process(int client_sock, struct node* game_node){
-    int currentNode;
-    int nextNode;
-    nextNode = decideNextNode(currentNode, currentNode);
+void game_process(int* players, int* spectators, int total_players, int total_spectators){
+    // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
+    int erenChose[MAX_NODE];
+    int mikasaChose[MAX_NODE];
+    int arminChose[MAX_NODE];
+    for (int i = 0; i < MAX_NODE; i++) {
+        erenChose[i] = CHOICE_INITIAL;
+        mikasaChose[i] = CHOICE_INITIAL;
+        arminChose[i] = CHOICE_INITIAL;
+    }
+    StoryNode* current_node = &Main_node1;
+    StoryNode* next_node;
+    while (total_players == 3)
+    {
+        /* code */
+        // use select to check if there is any player send message
+    }
+
 }
 
 
@@ -226,8 +216,6 @@ void sigchld_handler(int s) {
     while(waitpid(-1, NULL, WNOHANG) > 0);
     errno = saved_errno;
 }
-
-
 
 
 void send_welcome_message(int client_sock, int client_number, int players_waiting, int spectators_waiting){
