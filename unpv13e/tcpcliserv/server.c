@@ -78,79 +78,83 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_addr, cli_addr;
     socklen_t clilen;
 
-    // Create socket
+    // 建立 Socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) 
        error("ERROR opening socket");
 
-    // Bind socket to a port
+    // Bind Socket
     bzero((char *) &serv_addr, sizeof(serv_addr));
-    portno = SERV_PORT; // Replace SERV_PORT with your port number
+    portno = SERV_PORT; // 用 SERV_PORT = 9877
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(portno);
     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
 
-    // Listen for incoming connections
+    // Socket Listen
     listen(sockfd, MAX_CLIENTS);
     clilen = sizeof(cli_addr);
 
-    int players[MAX_PLAYERS];
-    int spectators[MAX_CLIENTS - MAX_PLAYERS];
-    int total_clients = 0;
-    int total_players = 0;
-    int total_spectators = 0;
+    // 處理 zombie process
+    struct sigaction sa;
+    sa.sa_handler = sigchld_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
 
-    while (1) {
-        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-        if (newsockfd < 0) {
-            perror("ERROR on accept");
-            exit(1);
-        }
-        send_welcome_message(newsockfd, total_clients, total_players, total_spectators);
-        int player_or_spectator = receive_player_choice(newsockfd);
-        if (player_or_spectator == TO_PLAY) {
-            players[total_players] = newsockfd;
-            total_players++;
-        } else if (player_or_spectator == TO_SPECTATE && total_clients < MAX_SPECATORS) {
-            spectators[total_spectators] = newsockfd;
-            total_spectators++;
-        } else {
-            // Too many clients connected or invalid choice
-        }
-        total_clients++;
-        struct sigaction sa;
-        sa.sa_handler = sigchld_handler; // reap all dead processes
-        sigemptyset(&sa.sa_mask);
-        sa.sa_flags = SA_RESTART;
-        if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-            perror("sigaction");
-            exit(1);
-        }
-        if (total_players == MAX_PLAYERS) {
+    while (1){
+        int players[MAX_PLAYERS];
+        int spectators[MAX_CLIENTS - MAX_PLAYERS];
+        int total_clients = 0;
+        int total_players = 0;
+        int total_spectators = 0;
+        while(1){
+            newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+            if (newsockfd < 0) {
+                perror("ERROR on accept");
+                exit(1);
+            }
+            send_welcome_message(newsockfd, total_clients, total_players, total_spectators);
+            int player_or_spectator = receive_player_choice(newsockfd);
+            if (player_or_spectator == TO_PLAY) {
+                players[total_players] = newsockfd;
+                total_players++;
+                total_clients++;
+            } else if (player_or_spectator == TO_SPECTATE) {
+                // 處理 Client 人數過多
+                if  (total_clients >= MAX_SPECATORS){
+                    send_message(newsockfd, "Sorry, the Specator room is full. Please consider joining as player and connect again.\n");
+                    close(newsockfd);
+                    continue;
+                }
+                spectators[total_spectators] = newsockfd;
+                total_spectators++;
+                total_clients++;
+            } else{
+                // 處理 Client 輸入錯誤
+                send_message(newsockfd, "Sorry, invalid choice. Please connect again.\n");
+                close(newsockfd);
+                continue;
+            }
+            // 如果有三個玩家，就開始遊戲
+            if (total_players == MAX_PLAYERS) {
                 pid_t pid = fork();
                 if (pid < 0) {
                     perror("ERROR on fork");
                     exit(1);
                 }
                 if (pid == 0) {
-                    // This is the child process
-                    // Here you can handle the game with the players and spectators
-                    // You can use the arrays 'players' and 'spectators' which contain the socket descriptors
-                    // After handling the game, the child process should exit
+                    // child process
                     game_process(players, spectators, total_players, total_spectators);
                     exit(0);
                 }
-
-                // This is the parent process
-                // Reset the players and spectators for the next game
-                total_clients = 0;
-                total_players = 0;
-                total_spectators = 0;
-        }       
+            }
+        }  
     }
-
     close(sockfd);
     return 0;
 }
@@ -178,10 +182,39 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     }
     StoryNode* current_node = &Main_node1;
     StoryNode* next_node;
-    while (total_players == 3)
+
+    fd_set readfds;
+
+    while (1)
     {
-        /* code */
-        // use select to check if there is any player send message
+        // 送故事
+        broadcast_story(players, total_players, current_node->story);
+        broadcast_story(spectators, total_spectators, current_node->story);
+        // 送選項
+        current_node->characterArray
+        
+        FD_ZERO(&readfds);
+        for (int i = 0; i < total_players; i++) {
+            FD_SET(players[i], &readfds);
+        }
+        int maxfd = players[0];
+        if (players[1] > maxfd) maxfd = players[1];
+        if (players[2] > maxfd) maxfd = players[2];
+        maxfd += 1;
+
+        if (select(maxfd, &readfds, NULL, NULL, NULL) < 0) {
+            perror("select error");
+            exit(EXIT_FAILURE);
+        }
+        if (FD_ISSET(players[0], &readfds)) {
+            // socket 01 可讀
+        }
+        if (FD_ISSET(players[1], &readfds)) {
+            // socket 02 可讀
+        }
+        if (FD_ISSET(players[2], &readfds)) {
+            // socket 03 可讀
+        }
     }
 
 }
@@ -201,10 +234,9 @@ void send_message(int client_sock, const char* msg) {
     while (total_sent < len) {
         sent = send(client_sock, msg + total_sent, len - total_sent, 0);
         if (sent < 0) {
-            if (errno == EINTR) continue; // Handle interrupted system call
+            if (errno == EINTR) continue;
             perror("ERROR on send");
-            // Handle error more gracefully, depending on your application logic
-            return; // Example: return instead of exit
+            return;
         }
         total_sent += sent;
     }
@@ -263,13 +295,23 @@ int is_ending_node(struct node* game_node){
 /*
 game_node: The current game story node to check.
 */
+    broadcast_game_ending();
     if(game_node.nodeSeriesNum >14 && game_node.nodeSeriesNum != 51 && game_node.nodeSeriesNum != 52){
         // 送最後一個劇情
         // 要求 client 給玩家退出或重連
-        broadcast_game_ending();
+    
     }
 }
-void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
+void game_ending(int* client_socks, int* spectator_socks, int client_num, int spectator_num, const char* ending_message){
+    for (int i = 0; i < client_num; i++){
+        /* code */
+        close(client_socks[i]);
+    }
+    for (int i = 0; i < spectator_num; i++){
+        /* code */
+        close(spectator_socks[i]);
+    }
+}
 /*
 client_socks: Array of client socket file descriptors.
 num_clients: Number of clients to broadcast the ending message to.
