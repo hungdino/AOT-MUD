@@ -5,6 +5,9 @@
 #define STORY_LENGTH 1024
 #define ID_LENGTH 32
 #define MAX_NODE 14
+#define EREN 0
+#define MIKASA 1
+#define ARMIN 2
 
 int decideNextNode(int currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
     int erenChose[MAX_NODE] = [1, 2, 1, 2, 2, 1, -1, 1, 2, ]; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0

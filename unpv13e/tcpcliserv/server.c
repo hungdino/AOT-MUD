@@ -57,6 +57,10 @@ Step 6（遊戲開始）
 #define CHOICE_3 3
 #define CHOICE_INITIAL -1
 
+#define EREN 0
+#define MIKASA 1
+#define ARMIN 2
+
 void error(const char *msg);
 void handle_client_interaction(int sockfd);
 void game_process(int* players, int* spectators, int total_players, int total_spectators);
@@ -183,16 +187,52 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     StoryNode* current_node = &Main_node1;
     StoryNode* next_node;
 
-    fd_set readfds;
-
     while (1)
     {
         // 送故事
         broadcast_story(players, total_players, current_node->story);
         broadcast_story(spectators, total_spectators, current_node->story);
         // 送選項
-        current_node->characterArray
+        for (int i = 0; i < MAX_PLAYERS; i++)
+        {
+            int turn = current_node->characterArray[i];
+            if (turn == EREN)
+            {
+                send_options(players[EREN], current_node->Eren);
+                int decided_choice = receive_player_choice(players[EREN]);
+                erenChose[current_node->nodeSeriesNum] = decided_choice;
+            }
+            else if (turn == MIKASA)
+            {
+                send_options(players[MIKASA], current_node->Mikasa);
+                receive_player_choice(players[MIKASA]);
+                int decided_choice = receive_player_choice(players[MIKASA]);
+                mikasaChose[current_node->nodeSeriesNum] = decided_choice;
+            }
+            else if (turn == ARMIN)
+            {
+                send_options(players[ARMIN], current_node->Armin);
+                receive_player_choice(players[ARMIN]);
+                int decided_choice = receive_player_choice(players[ARMIN]);
+                arminChose[current_node->nodeSeriesNum] = decided_choice;
+            }
+            else
+            {
+                // 處理錯誤
+            }
+        if(is_ending_node(current_node)){
+            // 處理結局
+            game_ending(players, spectators, total_players, total_spectators, current_node->story);
+            break;
+        }
+        next_node = decide_next_node(current_node, erenChose, mikasaChose, arminChose);
+        }
         
+    }
+
+}
+/*
+        fd_set readfds;
         FD_ZERO(&readfds);
         for (int i = 0; i < total_players; i++) {
             FD_SET(players[i], &readfds);
@@ -215,9 +255,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         if (FD_ISSET(players[2], &readfds)) {
             // socket 03 可讀
         }
-    }
-
-}
+*/
 
 
 
@@ -283,7 +321,7 @@ client_socks: Array of client socket file descriptors.
 num_clients: Number of clients to broadcast the story to.
 story: The story text to be broadcasted.
 */
-int send_options_and_receive_choice(int client_sock, const char* options){
+int send_option(int client_sock, const char* options){
 /*
 client_sock: The socket file descriptor for the client.
 options: The options to be presented to the client.
