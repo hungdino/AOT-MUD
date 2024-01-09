@@ -215,13 +215,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播EREN中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，軍團下令作戰取消。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
                         break;
                     }else{
                         printf("艾連選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "艾連選擇了 %s\n", current_node->Eren[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "艾連選擇了：%s\n", current_node->Eren[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
@@ -236,13 +236,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播MIKASA中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，軍團下令作戰取消。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
                         break;
                     }else{
                         printf("米卡莎選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了 %s\n", current_node->Mikasa[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了：%s\n", current_node->Mikasa[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
@@ -257,13 +257,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播ARMIN中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，軍團下令作戰取消。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
                         break;
                     }else{
                         printf("阿爾敏選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了 %s\n", current_node->Armin[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了：%s\n", current_node->Armin[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
