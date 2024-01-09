@@ -293,6 +293,7 @@ int receive_player_choice_1_to_3(int client_sock){
     }
 }
 void send_options(int client_sock, const char** options){
+    printf("進入 send_options\n");
     char options_msg[BUFFER_SIZE];
     snprintf(options_msg, BUFFER_SIZE, "[選項1]：%s\n[選項2]：%s\n[選項3]：%s\n", options[0], options[1], options[2]);
     printf("組合選項：%s\n", options_msg);
