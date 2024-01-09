@@ -61,29 +61,34 @@ void print_menu(int highlight, char* choices[], int n_choices, int start_row) {
     }
     fflush(stdout);
 }
-
+char *choices[3][3] = {
+        {"A", "B", "C"},
+        {"A", "B", "C"},
+        {"选项 A", "选项 B", "选项 C"}
+    };
 void xchg_data(FILE* fp, int sockfd) {
     int maxfdp1, stdineof, peer_exit, n;
     fd_set rset;
     char sendline[MAXLINE], recvline[MAXLINE];
 
     set_scr();
-    clr_scr();
+    //clr_scr();
     Writen(sockfd, id, strlen(id));
     printf("sent: %s\n", id);
     readline(sockfd, recvline, MAXLINE);
     printf("recv: %s", recvline);
-    readline(sockfd, recvline, MAXLINE);
-    printf("recv: %s", recvline);
+
     stdineof = 0;
     peer_exit = 0;
-    clr_scr();
-    printf("%s\n", ascii_art);
-    printf("choose 1 to join the game  or 2 to be spectator\n");
-    printf("choose 1 to join the game  or 2 to be spectator\n");
-    clr_scr();
+    //clr_scr();
+    
+    printf("\n");
+    printf("\n");
+    //clr_scr();
     int highlight = 0;
+    
     setup_non_blocking_io();
+    printf("a\n");
     for (; ; ) {
         FD_ZERO(&rset);
         maxfdp1 = 0;
@@ -131,11 +136,7 @@ void xchg_data(FILE* fp, int sockfd) {
                 }
             };
         }
-        char *choices[3][3] = {
-        {"选项 A", "选项 B", "选项 C"},
-        {"选项 A", "选项 B", "选项 C"},
-        {"选项 A", "选项 B", "选项 C"}
-    };
+        
         if (FD_ISSET(fileno(fp), &rset)) {  /* input is readable */
             
             int n_choices = 3;
@@ -170,7 +171,7 @@ void xchg_data(FILE* fp, int sockfd) {
                     n = strlen(sendline);
                     
                     Writen(sockfd, sendline, n);
-                    printf("%s\n", sendline);
+                    printf("%sout\n", sendline);
                 }
             }
          
@@ -192,12 +193,13 @@ main(int argc, char** argv)
 	
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(SERV_PORT + 3);
+    servaddr.sin_port = htons(SERV_PORT);
     Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
     strcpy(id, argv[2]);
-
+    printf("%s\n", ascii_art);
+    sleep(0);
     Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
-
+	
     xchg_data(stdin, sockfd);		/* do it all */
 
     exit(0);
