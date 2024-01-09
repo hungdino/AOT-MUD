@@ -4,7 +4,6 @@
 #define OPTION_DESC_LENGTH 256
 #define STORY_LENGTH 1024
 #define ID_LENGTH 32
-#define MAX_NODE 14
 #define EREN 0
 #define MIKASA 1
 #define ARMIN 2

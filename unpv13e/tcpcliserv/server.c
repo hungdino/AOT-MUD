@@ -270,7 +270,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 }
                 else
                 {
-                    printf("這一 turn 有人沒有選項 QQ\n", turn);
+                    printf("這一 turn 有人沒有選項 QQ\n");
                 }
             }
         }
