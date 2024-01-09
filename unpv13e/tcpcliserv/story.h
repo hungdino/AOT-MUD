@@ -19,293 +19,6 @@ typedef struct {
     char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
 } StoryNode;
 
-StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* erenChose, int* mikasaChose, int* arminChose) {
-    int currentNode = current_node->nodeSeriesNum;
-    switch (currentNode) {
-    case 1:
-        if (mikasaChose[numOfNodePlayed] == 1) {
-            if (arminChose[numOfNodePlayed] == 2) {
-                nextNode = 2;
-            }
-            else {
-                nextNode = 10;
-            }
-        }
-        else if (mikasaChose[numOfNodePlayed] == 2) {
-            if (erenChose[numOfNodePlayed] == 2) {
-                nextNode = 10;
-            }
-            else if (erenChose[numOfNodePlayed] == 1) {
-                nextNode = 2;
-            }
-            else {
-                if (arminChose[numOfNodePlayed] == 2) {
-                    nextNode = 2;
-                }
-                else {
-                    nextNode = 10;
-                }
-            }
-        }
-        break;
-    case 2:
-
-    case 3:
-        if (erenChose[numOfNodePlayed] == 1) {
-            nextNode = 16;//BE特殊
-        }
-        else if (mikasaChose[numOfNodePlayed] == 2) {
-            nextNode = 13;//米咖沙normal
-        }
-        else {
-            nextNode = 4;
-        }
-        break;
-    case 4:
-        if (erenChose[numOfNodePlayed] == 1) {
-            nextNode = 6;//跳到清醒
-        }
-        else if (mikasaChose[numOfNodePlayed] == 1) {
-            if (arminChose[numOfNodePlayed] == 1) {
-                nextNode = 5;//正確到下點
-            }
-            else {
-                nextNode = 14;//神秘人
-            }
-
-        }
-        else {
-            nextNode = 15;//BE一般
-        }
-        break;
-    case 5:
-        if (mikasaChose[numOfNodePlayed] != 3 && arminChose[numOfNodePlayed] == 3)
-            nextNode = 51;
-        else {
-            nextNode = 52;
-        }
-        break;
-    case 51:
-        if (erenChose[numOfNodePlayed] == 3) {
-            if (mikasaChose[5] == 1)
-                nextNode = 6;//跳到正確清醒
-            if (mikasaChose[5] == 2)
-                nextNode = 8;//跳到錯誤清醒
-        }
-        else {
-            nextNode = 17;//BE特殊
-        }
-        break;
-    case 52:
-        nextNode = 17;//BE特殊
-        break;
-    case 6:
-        if (mikasaChose[numOfNodePlayed] == 1 && arminChose[numOfNodePlayed] == 1) {
-            nextNode = 15;//BE一般
-        }
-        else if (mikasaChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
-            nextNode = 10;
-        }
-        else if (arminChose[numOfNodePlayed] == 3) {
-            nextNode = 9;//TE結局前
-        }
-        else {
-            nextNode = 7;
-        }
-        break;
-    case 7:
-        if (erenChose[numOfNodePlayed] == 1) {
-            if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
-                nextNode = 40;//TE 死亡米咖殺有來
-            else if (erenChose[3] == 3)
-                nextNode = 41;//TE 死亡
-            else
-                nextNode = 42;//TE 死亡
-        }
-        else if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 20;//NE1 米卡莎死亡
-        }
-        else {
-            nextNode = 99;//HE
-        }
-
-        break;
-    case 8:
-        if (mikasaChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
-            nextNode = 15;//BE一般
-        }
-        else {
-            nextNode = 10;
-        }
-        break;
-    case 9:
-        if (erenChose[numOfNodePlayed] == 1) {
-            if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
-                nextNode = 40;//TE 死亡米咖殺有來
-            else if (erenChose[3] == 3)
-                nextNode = 41;//TE 死亡
-            else
-                nextNode = 55;//TE
-        }
-        else if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 20;//NE1 米卡莎死亡
-        }
-        else {
-            nextNode = 99;//HE
-        }
-        break;
-    case 10:
-        if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed] && mikasaChose[numOfNodePlayed] == arminChose[numOfNodePlayed]) {
-            if (erenChose[numOfNodePlayed] == 3) {
-                nextNode = 20; //NE1 撤退
-            }
-            else {
-                nextNode = 7;
-            }
-        }
-        else {
-            nextNode = 15;//BE一般
-        }
-    case 11:
-        if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed]) {
-            if (erenChose[numOfNodePlayed] == 3) {
-                nextNode = 15;//BE一般
-            }
-            else {
-                nextNode = 12;
-            }
-        }
-        else {
-            nextNode = 15;//BE一般
-        }
-        break;
-    case 12:
-        if (erenChose[numOfNodePlayed] == 3 || mikasaChose[numOfNodePlayed] == 3 || arminChose[numOfNodePlayed] != 3) {
-            nextNode = 1207;
-        }//TE2地下室
-        else if (erenChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
-            nextNode = 2;//回軍團
-        }
-        else {
-            nextNode = 15;//BE一般
-        }
-        break;//解釋一下這裡，每個人開門都有機率，要艾倫米卡莎其中一個開成功，阿爾敏不開門才能把門打開，機率失敗默認二
-    case 13:
-        if (erenChose[numOfNodePlayed] == 1) {
-            nextNode = 6;
-        }//TE2地下室
-        else if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 8;//回主點6
-        }
-        else if (mikasaChose[numOfNodePlayed] == 2 && arminChose[numOfNodePlayed] == 2) {
-            nextNode = 14;//冰長
-        }
-        else {
-            nextNode = 15;//BE一般
-        }
-        break;
-    case 14:
-        if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 15;//BE一般
-        }
-        else {
-            nextNode = 22;//NE 兵長
-        }
-        break;
-    default:
-        nextNode = -1; // 回報錯誤：章節不存在
-    }
-
-
-    switch (nextNode)
-    {
-    case 1:
-        return &Main_node1;
-        break;
-    case 2:
-        return &Main_node2;
-        break;
-    case 3:
-        return &Main_node3;
-        break;
-    case 4:
-        return &Main_node4;
-        break;
-    case 5:
-        return &Main_node5;
-        break;
-    case 51:
-        return &Main_node5_right;
-        break;
-    case 52:
-        return &Main_node5_false;
-        break;
-    case 6:
-        return &Main_node6;
-        break;
-    case 7:
-        return &Main_node7;
-        break;
-    case 9:
-        return &TE_node7;
-        break;
-    case 8:
-        return &Mikasa_not_help_node6;
-        break;
-    case 10:
-        return &Mikasa_not_help_node7;
-        break;
-    case 11:
-        return &basement_node2;
-        break;
-    case 12:
-        return &basement_node3;
-        break;
-    case 13:
-        return &Mikasa_normal_node3;
-        break;
-    case 14:
-        return &Mikasa_normal_node4;
-        break;
-    case 15:
-        return &normal_bad_end;
-        break;
-    case 16:
-        return &castle_bad_end;
-        break;
-    case 17:
-        return &sleep_bad_end;
-        break;
-    case 18:
-        return &TE_bad_end1;
-        break;
-    case 41:
-        return &TE_bad_end2;
-        break;
-    case 42:
-        return &TE_bad_end3;
-        break;
-    case 99:
-        return &HE;
-        break;
-    case 55:
-        return &TE;
-        break;
-    case 20:
-        return &NE;
-        break;
-    case 1207:
-        return &TE2;
-        break;
-    case 22:
-        return &NE_another;
-        break;
-    default:
-        break;
-    }
-    
-}
-
 StoryNode Main_node1 = {
     1, // nodeSeriesNum
     "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回，艾連自己從巨人身體中走了出來，並表示他想起了父親曾告訴他所有事情只要回到家裡的地下室就會有所解答。", // story
@@ -913,5 +626,292 @@ void traverseNode(StoryNode node) {
             printf("  %s\n", options[j]);
         }
     }
+}
+
+StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* erenChose, int* mikasaChose, int* arminChose) {
+    int currentNode = current_node->nodeSeriesNum;
+    switch (currentNode) {
+    case 1:
+        if (mikasaChose[numOfNodePlayed] == 1) {
+            if (arminChose[numOfNodePlayed] == 2) {
+                nextNode = 2;
+            }
+            else {
+                nextNode = 10;
+            }
+        }
+        else if (mikasaChose[numOfNodePlayed] == 2) {
+            if (erenChose[numOfNodePlayed] == 2) {
+                nextNode = 10;
+            }
+            else if (erenChose[numOfNodePlayed] == 1) {
+                nextNode = 2;
+            }
+            else {
+                if (arminChose[numOfNodePlayed] == 2) {
+                    nextNode = 2;
+                }
+                else {
+                    nextNode = 10;
+                }
+            }
+        }
+        break;
+    case 2:
+
+    case 3:
+        if (erenChose[numOfNodePlayed] == 1) {
+            nextNode = 16;//BE特殊
+        }
+        else if (mikasaChose[numOfNodePlayed] == 2) {
+            nextNode = 13;//米咖沙normal
+        }
+        else {
+            nextNode = 4;
+        }
+        break;
+    case 4:
+        if (erenChose[numOfNodePlayed] == 1) {
+            nextNode = 6;//跳到清醒
+        }
+        else if (mikasaChose[numOfNodePlayed] == 1) {
+            if (arminChose[numOfNodePlayed] == 1) {
+                nextNode = 5;//正確到下點
+            }
+            else {
+                nextNode = 14;//神秘人
+            }
+
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;
+    case 5:
+        if (mikasaChose[numOfNodePlayed] != 3 && arminChose[numOfNodePlayed] == 3)
+            nextNode = 51;
+        else {
+            nextNode = 52;
+        }
+        break;
+    case 51:
+        if (erenChose[numOfNodePlayed] == 3) {
+            if (mikasaChose[5] == 1)
+                nextNode = 6;//跳到正確清醒
+            if (mikasaChose[5] == 2)
+                nextNode = 8;//跳到錯誤清醒
+        }
+        else {
+            nextNode = 17;//BE特殊
+        }
+        break;
+    case 52:
+        nextNode = 17;//BE特殊
+        break;
+    case 6:
+        if (mikasaChose[numOfNodePlayed] == 1 && arminChose[numOfNodePlayed] == 1) {
+            nextNode = 15;//BE一般
+        }
+        else if (mikasaChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
+            nextNode = 10;
+        }
+        else if (arminChose[numOfNodePlayed] == 3) {
+            nextNode = 9;//TE結局前
+        }
+        else {
+            nextNode = 7;
+        }
+        break;
+    case 7:
+        if (erenChose[numOfNodePlayed] == 1) {
+            if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
+                nextNode = 40;//TE 死亡米咖殺有來
+            else if (erenChose[3] == 3)
+                nextNode = 41;//TE 死亡
+            else
+                nextNode = 42;//TE 死亡
+        }
+        else if (mikasaChose[numOfNodePlayed] == 1) {
+            nextNode = 20;//NE1 米卡莎死亡
+        }
+        else {
+            nextNode = 99;//HE
+        }
+
+        break;
+    case 8:
+        if (mikasaChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
+            nextNode = 15;//BE一般
+        }
+        else {
+            nextNode = 10;
+        }
+        break;
+    case 9:
+        if (erenChose[numOfNodePlayed] == 1) {
+            if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
+                nextNode = 40;//TE 死亡米咖殺有來
+            else if (erenChose[3] == 3)
+                nextNode = 41;//TE 死亡
+            else
+                nextNode = 55;//TE
+        }
+        else if (mikasaChose[numOfNodePlayed] == 1) {
+            nextNode = 20;//NE1 米卡莎死亡
+        }
+        else {
+            nextNode = 99;//HE
+        }
+        break;
+    case 10:
+        if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed] && mikasaChose[numOfNodePlayed] == arminChose[numOfNodePlayed]) {
+            if (erenChose[numOfNodePlayed] == 3) {
+                nextNode = 20; //NE1 撤退
+            }
+            else {
+                nextNode = 7;
+            }
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+    case 11:
+        if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed]) {
+            if (erenChose[numOfNodePlayed] == 3) {
+                nextNode = 15;//BE一般
+            }
+            else {
+                nextNode = 12;
+            }
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;
+    case 12:
+        if (erenChose[numOfNodePlayed] == 3 || mikasaChose[numOfNodePlayed] == 3 || arminChose[numOfNodePlayed] != 3) {
+            nextNode = 1207;
+        }//TE2地下室
+        else if (erenChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
+            nextNode = 2;//回軍團
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;//解釋一下這裡，每個人開門都有機率，要艾倫米卡莎其中一個開成功，阿爾敏不開門才能把門打開，機率失敗默認二
+    case 13:
+        if (erenChose[numOfNodePlayed] == 1) {
+            nextNode = 6;
+        }//TE2地下室
+        else if (mikasaChose[numOfNodePlayed] == 1) {
+            nextNode = 8;//回主點6
+        }
+        else if (mikasaChose[numOfNodePlayed] == 2 && arminChose[numOfNodePlayed] == 2) {
+            nextNode = 14;//冰長
+        }
+        else {
+            nextNode = 15;//BE一般
+        }
+        break;
+    case 14:
+        if (mikasaChose[numOfNodePlayed] == 1) {
+            nextNode = 15;//BE一般
+        }
+        else {
+            nextNode = 22;//NE 兵長
+        }
+        break;
+    default:
+        nextNode = -1; // 回報錯誤：章節不存在
+    }
+
+
+    switch (nextNode)
+    {
+    case 1:
+        return &Main_node1;
+        break;
+    case 2:
+        return &Main_node2;
+        break;
+    case 3:
+        return &Main_node3;
+        break;
+    case 4:
+        return &Main_node4;
+        break;
+    case 5:
+        return &Main_node5;
+        break;
+    case 51:
+        return &Main_node5_right;
+        break;
+    case 52:
+        return &Main_node5_false;
+        break;
+    case 6:
+        return &Main_node6;
+        break;
+    case 7:
+        return &Main_node7;
+        break;
+    case 9:
+        return &TE_node7;
+        break;
+    case 8:
+        return &Mikasa_not_help_node6;
+        break;
+    case 10:
+        return &Mikasa_not_help_node7;
+        break;
+    case 11:
+        return &basement_node2;
+        break;
+    case 12:
+        return &basement_node3;
+        break;
+    case 13:
+        return &Mikasa_normal_node3;
+        break;
+    case 14:
+        return &Mikasa_normal_node4;
+        break;
+    case 15:
+        return &normal_bad_end;
+        break;
+    case 16:
+        return &castle_bad_end;
+        break;
+    case 17:
+        return &sleep_bad_end;
+        break;
+    case 18:
+        return &TE_bad_end1;
+        break;
+    case 41:
+        return &TE_bad_end2;
+        break;
+    case 42:
+        return &TE_bad_end3;
+        break;
+    case 99:
+        return &HE;
+        break;
+    case 55:
+        return &TE;
+        break;
+    case 20:
+        return &NE;
+        break;
+    case 1207:
+        return &TE2;
+        break;
+    case 22:
+        return &NE_another;
+        break;
+    default:
+        break;
+    }
+    
 }
 #pragma once
