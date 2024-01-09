@@ -179,12 +179,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     StoryNode* current_node;
     StoryNode* next_node = &Main_node1;
     int node_counter = 0;
-
+    int some_left = 0;
     while (1)
     {
         current_node = next_node;
         node_counter++;
-        int some_left = 0;
         // 判斷是否為結局
         if(is_ending_node(current_node->nodeSeriesNum || some_left == 1)){
         // 進入結局
@@ -207,7 +206,8 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
                     if (decided_choice == -1)
                     {
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+                        printf("廣播ARMIN中離。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，我們懷念他。\n");
                         some_left = 1;
                     }
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
@@ -221,7 +221,8 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     int decided_choice = receive_player_choice_1_to_3(players[MIKASA]);
                     if (decided_choice == -1)
                     {
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+                        printf("廣播MIKASA中離。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，我們懷念她。\n");
                         some_left = 1;
                     }
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
@@ -235,14 +236,17 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     int decided_choice = receive_player_choice_1_to_3(players[ARMIN]);
                     if (decided_choice == -1)
                     {
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+                        printf("廣播ARMIN中離。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，我們懷念他。\n");
                         some_left = 1;
                     }
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
                 }
                 else
                 {
-                    printf("ERROR: No turn matched. = %d\n", turn);
+                    printf("No turn matched. = %d\n", turn);
+                    printf("node_counter = %d\n", node_counter);
+                    printf("current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
                 }
             }
         }
