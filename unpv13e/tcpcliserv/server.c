@@ -106,15 +106,15 @@ int main(int argc, char *argv[]) {
             send_welcome_message(newsockfd, buffer  ,total_players, total_spectators);
             int player_or_spectator = receive_player_choice_paly_or_spectate(newsockfd);
             if (player_or_spectator == TO_PLAY) {
-                send_message(newsockfd, "恭喜您，您已編入戰鬥部隊，請稍候其他隊員準備完畢即可進入戰場。\n");
+                send_message(newsockfd, "恭喜您，您經過訓練軍團的考驗，已獲得資格編入戰鬥部隊，請稍候其他隊員準備完畢即可進入戰場。\n");
                 if (total_players == 0){
-                    send_message(newsockfd, "接下您，您將作為艾連完成瑪利亞之牆奪還戰，為了那自由的天空，獻出你的心臟吧！心臓をささげよ！\n");
+                    send_message(newsockfd, "接下您，您將作為「艾連」完成瑪利亞之牆奪還戰，為了那自由的天空，獻出你的心臟吧！心臓をささげよ！\n");
                 }
                 else if (total_players == 1){
-                    send_message(newsockfd, "接下您，您將作為米卡莎參與瑪利亞之牆奪還戰，為了妳心愛的艾連，獻出妳的心臟吧！心臓をささげよ！\n");
+                    send_message(newsockfd, "接下您，您將作為「米卡莎」參與瑪利亞之牆奪還戰，為了妳心愛的艾連，獻出妳的心臟吧！心臓をささげよ！\n");
                 }
                 else if (total_players == 2){
-                    send_message(newsockfd, "接下您，您將作為阿爾敏帶領瑪利亞之牆奪還戰，為了人類文明的存續，獻出你的心臟吧！心臓をささげよ！\n");
+                    send_message(newsockfd, "接下您，您將作為「阿爾敏」帶領瑪利亞之牆奪還戰，為了人類文明的存續，獻出你的心臟吧！心臓をささげよ！\n");
                 }
                 
                 players[total_players] = newsockfd;
@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
                 if (pid == 0) {
                     // child process
                     game_process(players, spectators, total_players, total_spectators);
-                    printf("一局遊戲結束，該局的 child process 正常關閉。\n");
+                    printf("以上一局遊戲結束，該局的 child process 正常關閉。\n");
                     exit(0);
                 }
             }
