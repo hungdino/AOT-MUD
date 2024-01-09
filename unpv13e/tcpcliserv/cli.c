@@ -96,6 +96,7 @@ void xchg_data(FILE* fp, int sockfd) {
     bool is_choose=true;
     print_menu(0, choices[0], 3, 1);
     for (; ; ) {
+    	
         FD_ZERO(&rset);
         maxfdp1 = 0;
         if (stdineof == 0) {
@@ -143,7 +144,6 @@ void xchg_data(FILE* fp, int sockfd) {
                 }
                 else
                 {
-                    printf("a\n", recvline);
                     printf("%s\n", recvline);
                 }
             };
@@ -185,11 +185,11 @@ void xchg_data(FILE* fp, int sockfd) {
                 case 'e': // Enter键
                     int user_choice = highlight;
                     sprintf(sendline, "%d\n", user_choice+1);
-                    n = strlen(sendline);
-                    
-                    Writen(sockfd, sendline, n);
-                    printf("%sout\n", sendline);
                     is_choose=false;
+                    n = strlen(sendline);
+                    printf("\n");
+                    Writen(sockfd, sendline, n);
+                    
                     break;
                 }
              }

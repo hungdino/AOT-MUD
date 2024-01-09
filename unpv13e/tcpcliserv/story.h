@@ -22,7 +22,7 @@ typedef struct {
 
 StoryNode Main_node1 = {
     1, // nodeSeriesNum
-    "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回，艾連自己從巨人身體中走了出來，並表示他想起了父親曾告訴他所有事情只要回到家裡的地下室就會有所解答。", // story
+    "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回，艾連自己從巨人身體中走了出來，並表示他想起了父親曾告訴他所有事情只要回到家裡的地下室就會有所解答。\n", // story
     {EREN, MIKASA, ARMIN}, // characterArray
     {   // 艾連的選項
         "聽從阿爾敏的選擇",
@@ -46,9 +46,9 @@ StoryNode Main_node2 = {
     "阿爾敏表示自己一定可以說服駐紮軍團，在他發表的言論下，果真令駐紮軍團大部分的士兵動搖了，但膽小如鼠的指揮官奇茲已經失去思考的能力，仍執意要下令攻擊，就在千鈞一髮之際，駐紮兵團的總司令達特 · 皮克希斯來到，並制止了奇茲。在聽完艾連所知的所有關於巨人化的情報後，達特決定採用阿爾敏的建議，要利用巨人化後的艾連將托洛斯特區被摧毀的城門洞口補起來。", // story
     {ARMIN, NONE_CHARACTER, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
-        "None",
-        "None",
-        "None"
+        "先觀察周圍的情況，找到最佳變身位置，以減少自身暴露於敵人視線的風險。",
+        "直接變身成巨人，你不相信我OwO?",
+        "回家，問就是回家"
     },
     {   // 米卡莎的選項
         "None",
@@ -58,7 +58,7 @@ StoryNode Main_node2 = {
     {   // 阿爾敏的選項
         "讓一群人聚集在石頭的另一邊引誘大部分的巨人到角落，另外再派少數精銳保護艾連",
         "讓一群精銳在石頭的另一邊發出大量聲響和快速移動吸引巨人，主要部隊在艾倫周圍當人牆",
-        "表示自己一定可以說服駐紮軍團，回到軍團繼續下一步動作。"
+        "回家，問就是回家"
     }
 };
 StoryNode Main_node3 = {
@@ -89,7 +89,7 @@ StoryNode Main_node4 = {
     {   // 艾連的選項
        "掙扎試圖控制自己的巨人身體(機率失敗)",//這裡在client端roll有沒有成功，沒有就直接傳2給server
         "對周圍的士兵造成混亂",
-        "對周圍的士兵造成混亂"
+        "None"
     },
     {   // 米卡莎的選項
         "不認為艾倫會失敗，衝到艾倫的臉上試圖喚醒他",//正解
@@ -583,25 +583,24 @@ StoryNode NE_another = {
         "與神秘角色合作"//(阿爾敏不重要)
     }
 };
-
-StoryNode out_of_senario = {
-    9877, // nodeSeriesNum
-    "圖如其然的變異種一口吞下所有人，瑪利亞之牆奪還戰以失敗告終。", // story
+StoryNode NE_another2 = {
+    23, // nodeSeriesNum
+    "回家，都說回家了就是回家，至於戰役呢?", // stry
     {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
-        "None",
-        "None",
-        "None"
+        "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
+        "對周圍的士兵造成混亂",
+        "對周圍的士兵造成混亂"
     },
     {   // 米卡莎的選項
-        "None",
-        "None",
-        "None"
+        "與神秘角色合作",
+        "直接與神秘角色對抗",//只有這個錯誤
+        "與神秘角色溝通，尋求協助"
     },
     {   // 阿爾敏的選項
-        "None",
-        "None",
-        "None"
+        "試圖直接接近並干預艾倫",
+        "協調其他士兵建立防禦陣線",
+        "與神秘角色合作"//(阿爾敏不重要)
     }
 };
 /*
@@ -650,7 +649,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
     int nextNode;
     switch (currentNode) {
     case 1:
-        if (mikasaChose[numOfNodePlayed] == 1) {
+        if (mikasaChose[numOfNodePlayed] == 1||mikasaChose[numOfNodePlayed] == 3) {
             if (arminChose[numOfNodePlayed] == 2) {
                 nextNode = 2;
             }
@@ -660,10 +659,10 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         else if (mikasaChose[numOfNodePlayed] == 2) {
             if (erenChose[numOfNodePlayed] == 2) {
-                nextNode = 11;
+                nextNode = 2;
             }
             else if (erenChose[numOfNodePlayed] == 1) {
-                nextNode = 2;
+                nextNode = 11;
             }
             else {
                 if (arminChose[numOfNodePlayed] == 2) {
@@ -676,7 +675,19 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         break;
     case 2:
-
+	if (arminChose[numOfNodePlayed] == 1) {
+                    nextNode = 3;
+        }
+        if(erenChose[numOfNodePlayed] == 2){
+        	nextNode=16;
+        }
+        if (arminChose[numOfNodePlayed] == 2{
+                    nextNode = 15;
+        }
+        if (arminChose[numOfNodePlayed] == 3&&erenChose[numOfNodePlayed]) {
+                    nextNode = 23;
+        }
+        break;
     case 3:
         if (erenChose[numOfNodePlayed] == 1) {
             nextNode = 16;//BE特殊
@@ -927,8 +938,10 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
     case 22:
         return &NE_another;
         break;
+    case 23:
+        return &NE_another2;
+        break;
     default:
-        return &out_of_senario;
         break;
     }
     
