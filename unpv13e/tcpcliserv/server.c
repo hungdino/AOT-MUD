@@ -292,7 +292,7 @@ int receive_player_choice_1_to_3(int client_sock){
         }
     }
 }
-void send_options(int client_sock, const char** options){
+void send_options(int client_sock, const char* options){
     for(int i = 0; i < 3; i++){
         printf("選項 %d: %s\n", i+1, options[i]);
     }
