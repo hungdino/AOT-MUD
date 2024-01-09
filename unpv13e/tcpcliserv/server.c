@@ -212,7 +212,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     }else{
                         printf("艾連選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "艾連選擇了 %d\n", current_node->Eren[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "艾連選擇了 %s\n", current_node->Eren[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
@@ -232,7 +232,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     }else{
                         printf("米卡莎選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了 %d\n", current_node->Eren[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了 %s\n", current_node->Eren[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
@@ -252,7 +252,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     }else{
                         printf("阿爾敏選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了 %d\n", current_node->Eren[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了 %s\n", current_node->Eren[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
