@@ -38,7 +38,7 @@ Step 6（遊戲開始）
 #include <netinet/in.h>
 #include <signal.h>
 #include <arpa/inet.h>
-#include <pthread.h>
+#include <time.h>
 
 
 // Define constants and function prototypes
@@ -51,11 +51,13 @@ Step 6（遊戲開始）
 #define TO_PLAY 1
 #define TO_SPECTATE 2
 // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
-#define CHOICE_NOT_AVAILABLE 0
+#define CHOICE_NOT_AVAILABLE -1
 #define CHOICE_1 1
 #define CHOICE_2 2
 #define CHOICE_3 3
-#define CHOICE_INITIAL -1
+#define CHOICE_INITIAL 0
+#define IS_ENDING_NODE 1
+#define NOT_ENDING_NODE 0
 
 #define EREN 0
 #define MIKASA 1
@@ -67,14 +69,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
 char* get_client_ip(struct sockaddr_in cli_addr);
 void send_message(int client_sock, const char* msg);
 void sigchld_handler(int s);
-void send_welcome_message(int client_sock, int client_number, int players_waiting, int spectators_waiting);
+void send_welcome_message(int new_client_sock, int players_waiting, int spectators_waiting);
 int receive_player_choice(int client_sock);
 void send_game_status_message(int client_sock, const char* message);
-void handle_game_story(int client_sock, struct node* game_node);
 void broadcast_story(int* client_socks, int num_clients, const char* story);
 int send_options_and_receive_choice(int client_sock, const char* options);
-struct node* decide_next_node(struct node* current_node, int* choices, int num_choices);
-int is_ending_node(struct node* game_node);
+struct StoryNode* decide_next_node(struct node* current_node, int* choices, int num_choices);
+int is_ending_node(int game_node_number);
 void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
 
 int main(int argc, char *argv[]) {
@@ -109,38 +110,42 @@ int main(int argc, char *argv[]) {
         perror("sigaction");
         exit(1);
     }
-
+    // 處理 Client 開始進來的連線
     while (1){
         int players[MAX_PLAYERS];
-        int spectators[MAX_CLIENTS - MAX_PLAYERS];
+        int spectators[MAX_SPECATORS];
         int total_clients = 0;
         int total_players = 0;
         int total_spectators = 0;
+        // 開始接受 Client 連線
         while(1){
             newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
             if (newsockfd < 0) {
                 perror("ERROR on accept");
                 exit(1);
             }
-            send_welcome_message(newsockfd, total_clients, total_players, total_spectators);
+            // 送歡迎訊息
+            send_welcome_message(newsockfd, total_players, total_spectators);
             int player_or_spectator = receive_player_choice(newsockfd);
             if (player_or_spectator == TO_PLAY) {
+                send_message(newsockfd, "恭喜您，您已編入戰鬥部隊。\n");
                 players[total_players] = newsockfd;
                 total_players++;
                 total_clients++;
             } else if (player_or_spectator == TO_SPECTATE) {
                 // 處理 Client 人數過多
                 if  (total_clients >= MAX_SPECATORS){
-                    send_message(newsockfd, "Sorry, the Specator room is full. Please consider joining as player and connect again.\n");
+                    send_message(newsockfd, "抱歉，此次戰役編制已滿，請加入下一場戰役。\n");
                     close(newsockfd);
                     continue;
                 }
+                send_message(newsockfd, "您已被列為支援部隊，請稍候，稍後即可觀戰\n");
                 spectators[total_spectators] = newsockfd;
                 total_spectators++;
                 total_clients++;
-            } else{
+            } else{ // player_or_spectator == -1
                 // 處理 Client 輸入錯誤
-                send_message(newsockfd, "Sorry, invalid choice. Please connect again.\n");
+                send_message(newsockfd, "抱歉，司令部無法確認您的志願，請加入下一場戰役。\n");
                 close(newsockfd);
                 continue;
             }
@@ -175,7 +180,7 @@ void handle_client_interaction(int sockfd) {
     
 }
 void game_process(int* players, int* spectators, int total_players, int total_spectators){
-    // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
+    // 固定選項為 1, 2, 3，初始化（還沒選）為 0，該選項不能選為 -1
     int erenChose[MAX_NODE];
     int mikasaChose[MAX_NODE];
     int arminChose[MAX_NODE];
@@ -199,28 +204,26 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             if (turn == EREN)
             {
                 send_options(players[EREN], current_node->Eren);
-                int decided_choice = receive_player_choice(players[EREN]);
+                int decided_choice = receive_player_choice_1_to_3(players[EREN]);
                 erenChose[current_node->nodeSeriesNum] = decided_choice;
             }
             else if (turn == MIKASA)
             {
                 send_options(players[MIKASA], current_node->Mikasa);
-                receive_player_choice(players[MIKASA]);
-                int decided_choice = receive_player_choice(players[MIKASA]);
+                int decided_choice = receive_player_choice_1_to_3(players[MIKASA]);
                 mikasaChose[current_node->nodeSeriesNum] = decided_choice;
             }
             else if (turn == ARMIN)
             {
                 send_options(players[ARMIN], current_node->Armin);
-                receive_player_choice(players[ARMIN]);
-                int decided_choice = receive_player_choice(players[ARMIN]);
+                int decided_choice = receive_player_choice_1_to_3(players[ARMIN]);
                 arminChose[current_node->nodeSeriesNum] = decided_choice;
             }
             else
             {
                 // 處理錯誤
             }
-        if(is_ending_node(current_node)){
+        if(is_ending_node(current_node->nodeSeriesNum)){
             // 處理結局
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
@@ -288,33 +291,56 @@ void sigchld_handler(int s) {
 }
 
 
-void send_welcome_message(int client_sock, int client_number, int players_waiting, int spectators_waiting){
-/*
-client_sock: The socket file descriptor for the client.
-client_number: The sequential number of the client (n+1 in your example).
-total_players: Total number of players currently connected.
-players_waiting: Number of players waiting to join the game.
-spectators_waiting: Number of spectators waiting to watch the game.
-*/
+void send_welcome_message(int new_client_sock, int players_waiting, int spectators_waiting){
     char welcome_msg[BUFFER_SIZE];
-    snprintf(welcome_msg, BUFFER_SIZE, "[ID] 您好，歡迎來到 [酷炫的名字]，目前有 %d 個玩家等待中，您是第 %d 位進到遊戲室，其中有 %d 位想要進入遊戲， %d 位想要觀戰。\n", total_clients, client_number, players, spectators);
-    send(client_sock, welcome_msg, strlen(welcome_msg), 0);
+    int number_of_this_player = players_waiting + spectators_waiting + 1;
+    snprintf(welcome_msg, BUFFER_SIZE, "勇敢的士兵您好，歡迎來到瑪利亞之牆奪還戰，您是第 %d 位編列進此戰役的士兵，目前有 %d 位士兵想要親身參與奪還戰， %d 位想要邊支援後勤邊觀戰，請選擇您要 [1] 親身參與奪還戰 [2] 觀戰。\n", number_of_this_player,  players_waiting, spectators_waiting);
+    send_message(new_client_sock, welcome_msg);
 }
 
-int receive_player_choice(int client_sock);
+int receive_player_choice_paly_or_spectate(int client_sock){
 /*
-client_sock: The socket file descriptor for the client.
+return: TO_PLAY or TO_SPECTATE or -1
 */
+    char buffer[BUFFER_SIZE];
+    int n;
+    srand(time(NULL));
+    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) == 0){
+        return -1;
+    }else{
+        int choice = atoi(buffer);
+        if (choice == TO_PLAY || choice == TO_SPECTATE){
+            return choice;
+        }else{
+            return -1;
+        }
+    }
+}
+int receive_player_choice_1_to_3(int client_sock){
+/*
+return: the choice of the player
+*/
+    char buffer[BUFFER_SIZE];
+    int n;
+    srand(time(NULL));
+    int random = rand() % 3 + 1;
+    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) == 0){
+        return random;
+    }else{
+        int choice = atoi(buffer);
+        if (choice == 1 || choice == 2 || choice == 3){
+            return choice;
+        }else{
+            return random;
+        }
+    }
+}
 void send_game_status_message(int client_sock, const char* message);
 /*
 client_sock: The socket file descriptor for the client.
 message: The status message to be sent (e.g., waiting for more players, game starting, etc.).
 */
-void handle_game_story(int client_sock, struct node* game_node);
-/*
-client_sock: The socket file descriptor for the client.
-game_node: A pointer to the current game story node.
-*/
+v
 void broadcast_story(int* client_socks, int num_clients, const char* story);
 /*
 client_socks: Array of client socket file descriptors.
@@ -329,15 +355,15 @@ options: The options to be presented to the client.
 
 }
 
-int is_ending_node(struct node* game_node){
+int is_ending_node(int game_node_number){
 /*
 game_node: The current game story node to check.
 */
-    broadcast_game_ending();
-    if(game_node.nodeSeriesNum >14 && game_node.nodeSeriesNum != 51 && game_node.nodeSeriesNum != 52){
-        // 送最後一個劇情
-        // 要求 client 給玩家退出或重連
-    
+    if(game_node_number >14 && game_node_number != 51 && game_node_number != 52){
+        return IS_ENDING_NODE;  
+    }
+    else{
+        return NOT_ENDING_NODE;
     }
 }
 void game_ending(int* client_socks, int* spectator_socks, int client_num, int spectator_num, const char* ending_message){
