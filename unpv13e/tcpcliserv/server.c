@@ -74,7 +74,6 @@ void send_welcome_message(int new_client_sock, int players_waiting, int spectato
 int receive_player_choice(int client_sock);
 void send_game_status_message(int client_sock, const char* message);
 void broadcast_story(int* client_socks, int num_clients, const char* story);
-struct StoryNode* decide_next_node(struct node* current_node, int* choices, int num_choices);
 int is_ending_node(int game_node_number);
 void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
 
@@ -198,6 +197,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     }
     StoryNode* current_node = &Main_node1;
     StoryNode* next_node;
+    int node_counter = 0;
 
     while (1)
     {

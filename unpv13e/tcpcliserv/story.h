@@ -19,7 +19,7 @@ typedef struct {
     char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
 } StoryNode;
 
-int decideNextNode(StoryNode* currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
+struct StoryNode* decideNextNode(StoryNode* current_node, int numOfNodePlayed) { // currentNode == numOfNodePlayed
     int nextNode;
 
     switch (currentNode) {
