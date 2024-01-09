@@ -83,9 +83,15 @@ int main(int argc, char *argv[]) {
         int total_clients = 0;
         int total_players = 0;
         int total_spectators = 0;
+        char buffer[BUFFER_SIZE];
         // 開始接受 Client 連線
         while(1){
             newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+            int n = Readline(newsockfd, buffer, BUFFER_SIZE);
+            int n = Readline(newsockfd, buffer, BUFFER_SIZE);
+	        if (n > 0) {
+    		    buffer[strcspn(buffer, "\n")] = '\0'; // 去掉換行符
+	        }
             if (newsockfd < 0) {
                 perror("ERROR on accept");
                 exit(1);
@@ -232,10 +238,10 @@ void sigchld_handler(int s) {
 }
 
 
-void send_welcome_message(int new_client_sock, int players_waiting, int spectators_waiting){
+void send_welcome_message(int new_client_sock,char buffer[BUFFER_SIZE] , int players_waiting, int spectators_waiting){
     char welcome_msg[BUFFER_SIZE];
     int number_of_this_player = players_waiting + spectators_waiting + 1;
-    snprintf(welcome_msg, BUFFER_SIZE, "勇敢的士兵您好，歡迎來到瑪利亞之牆奪還戰，您是第 %d 位編列進此戰役的士兵，目前有 %d 位士兵想要親身參與奪還戰， %d 位想要邊支援後勤邊觀戰，請選擇您要 [1] 親身參與奪還戰 [2] 觀戰。\n", number_of_this_player,  players_waiting, spectators_waiting);
+    snprintf(welcome_msg, BUFFER_SIZE, "勇敢的%s士兵您好，歡迎來到瑪利亞之牆奪還戰，您是第 %d 位編列進此戰役的士兵，目前有 %d 位士兵想要親身參與奪還戰， %d 位想要邊支援後勤邊觀戰，請選擇您要 [1] 親身參與奪還戰 [2] 觀戰。\n", buffer,number_of_this_player,  players_waiting, spectators_waiting);
     send_message(new_client_sock, welcome_msg);
 }
 
