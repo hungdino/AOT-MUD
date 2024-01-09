@@ -129,14 +129,7 @@ void xchg_data(FILE* fp, int sockfd) {
             }
             else if (n > 0) {
                 recvline[n] = '\0';
-                if (recvline[0] == '5')
-                {    
-                close(sockfd);    
-                sockfd = Socket(AF_INET, SOCK_STREAM, 0);
-                Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
-                continue;
-                }
-                else if (recvline[0] == '6')
+                if (recvline[0] == '6')
                 {
 
                     int random_number = (rand() % 4) + 1;
