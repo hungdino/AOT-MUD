@@ -209,6 +209,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         printf("廣播EREN中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，我們懷念他。\n");
                         some_left = 1;
+                        break;
                     }else{
                         printf("艾連選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
@@ -229,6 +230,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         printf("廣播MIKASA中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，我們懷念她。\n");
                         some_left = 1;
+                        break;
                     }else{
                         printf("米卡莎選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
@@ -249,6 +251,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         printf("廣播ARMIN中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，我們懷念他。\n");
                         some_left = 1;
+                        break;
                     }else{
                         printf("阿爾敏選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
