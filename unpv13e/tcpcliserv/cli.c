@@ -129,10 +129,11 @@ void xchg_data(FILE* fp, int sockfd) {
             else if (n > 0) {
                 recvline[n] = '\0';
                 if (recvline[0] == '5')
-                {
-                    printf("game over\n");
-                    stdineof = 1;
-                    Shutdown(sockfd, SHUT_WR);
+                {    
+                close(sockfd);    
+                sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+                Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
+                continue;
                 }
                 else if (recvline[0] == '6')
                 {
