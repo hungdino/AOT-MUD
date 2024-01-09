@@ -655,12 +655,12 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
                 nextNode = 2;
             }
             else {
-                nextNode = 10;
+                nextNode = 11;
             }
         }
         else if (mikasaChose[numOfNodePlayed] == 2) {
             if (erenChose[numOfNodePlayed] == 2) {
-                nextNode = 10;
+                nextNode = 11;
             }
             else if (erenChose[numOfNodePlayed] == 1) {
                 nextNode = 2;
@@ -670,7 +670,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
                     nextNode = 2;
                 }
                 else {
-                    nextNode = 10;
+                    nextNode = 11;
                 }
             }
         }
