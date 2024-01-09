@@ -42,6 +42,7 @@ Step 6（遊戲開始）
 
 
 // Define constants and function prototypes
+#define TIMEOUT_SECONDS 10
 #define MAX_CLIENTS 10
 #define MAX_PLAYERS 3
 #define MAX_SPECATORS 7
@@ -123,6 +124,13 @@ int main(int argc, char *argv[]) {
             if (newsockfd < 0) {
                 perror("ERROR on accept");
                 exit(1);
+            }
+            // 設定 socket timeout 時間
+            struct timeval timeout;
+            timeout.tv_sec = TIMEOUT_SECONDS;
+            timeout.tv_usec = 0;
+            if (setsockopt(newsockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0) {
+                perror("setsockopt failed\n");
             }
             // 送歡迎訊息
             send_welcome_message(newsockfd, total_players, total_spectators);
@@ -324,14 +332,17 @@ return: the choice of the player
     int n;
     srand(time(NULL));
     int random = rand() % 3 + 1;
-    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) == 0){
-        return random;
-    }else{
-        int choice = atoi(buffer);
-        if (choice == 1 || choice == 2 || choice == 3){
-            return choice;
-        }else{
+    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            printf("讀取使用者選項超時。\n");
             return random;
+        }else{
+            int choice = atoi(buffer);
+            if (choice == 1 || choice == 2 || choice == 3){
+                return choice;
+            }else{
+                return random;
+            }
         }
     }
 }
