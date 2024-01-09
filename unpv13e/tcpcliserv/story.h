@@ -9,17 +9,15 @@
 #define MIKASA 1
 #define ARMIN 2
 
-// 故事節點結構
-typedef struct {
-    int     nodeSeriesNum;                                          // 節點編號
-    char    story[STORY_LENGTH];                                    // 故事提示
-    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
-    char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
-    char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
-    char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
-} StoryNode;
+int decideNextNode(int currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
+    int erenChose[MAX_NODE] = {-1}; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
+    int mikasaChose[MAX_NODE] = {-1};
+    int arminChose[MAX_NODE] = {-1};
 
+<<<<<<< HEAD
 struct StoryNode* decideNextNode(StoryNode* current_node, int numOfNodePlayed) { // currentNode == numOfNodePlayed
+=======
+>>>>>>> bc05022b9d0d834fb614360f98935b9eab111e61
     int nextNode;
 
     switch (currentNode) {
@@ -220,7 +218,15 @@ struct StoryNode* decideNextNode(StoryNode* current_node, int numOfNodePlayed) {
     return nextNode;
 }
 
-
+// 故事節點結構
+typedef struct {
+    int     nodeSeriesNum;                                          // 節點編號
+    char    story[STORY_LENGTH];                                    // 故事提示
+    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
+    char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
+    char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
+    char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
+} StoryNode;
 
 StoryNode Main_node1 = {
     1, // nodeSeriesNum
@@ -771,7 +777,7 @@ StoryNode TE2 = {
     }
 };
 
-StoryNode NE = {
+StoryNode NE_another = {
     22, // nodeSeriesNum
     "原來是緊急趕回的調查兵團，很遺憾，他們似乎認為這個計畫並不適合執行，艾倫被救了回來，但也僅此而已了", // story
     {"Armin","Mikasa","Eren"}, // characterArray
