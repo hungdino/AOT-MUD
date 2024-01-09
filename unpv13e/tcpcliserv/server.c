@@ -185,12 +185,15 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         current_node = next_node;
         node_counter++;
         // 判斷是否為結局
-        if(is_ending_node(current_node->nodeSeriesNum || some_left == 1)){
+        if(is_ending_node(current_node->nodeSeriesNum)){
         // 進入結局
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             broadcast(players, total_players, spectators, total_spectators, "戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
+        }else if(some_left == 1){
+            broadcast(players, total_players, spectators, total_spectators, "戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+            game_ending(players, spectators, total_players, total_spectators, current_node->story);
         }else{
             // 送故事
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
