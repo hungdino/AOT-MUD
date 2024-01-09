@@ -293,19 +293,14 @@ int receive_player_choice_1_to_3(int client_sock){
     }
 }
 void send_options(int client_sock, const char** options){
-    printf("選項：%s\n", options);
-    char options_msg[BUFFER_SIZE];
-    char temp[BUFFER_SIZE];
-    sprintf(temp, "[選項1]：%s\n", options[0]);
-    strcat(options_msg, temp);
-    sprintf(temp, "[選項2]：%s\n", options[1]);
-    strcat(options_msg, temp);
-    sprintf(temp, "[選項3]：%s\n", options[2]);
-    strcat(options_msg, temp);
-
-    printf("組合選項：%s\n", options_msg);
-    send_message(client_sock, options_msg);
-    printf("選項訊息送出\n");
+    send_message(client_sock, "請選擇您的選項：\n");
+    send_message(client_sock, "1. ");
+    send_message(client_sock, options[0]);
+    send_message(client_sock, "2. ");
+    send_message(client_sock, options[1]);
+    send_message(client_sock, "3. ");
+    send_message(client_sock, options[2]);
+    printf("選項訊息皆送出\n");
 }
 
 void broadcast(int* player_sock, int player_num, int*spectator_sock, int spectator_num, const char* msg){
