@@ -184,6 +184,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     {
         current_node = next_node;
         node_counter++;
+        printf("現在進行了幾個節點： %d\n", node_counter);
+        printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
+
         // 判斷是否為結局
         if(is_ending_node(current_node->nodeSeriesNum)){
         // 進入結局
@@ -265,9 +268,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 }
                 else
                 {
-                    printf("No turn matched. = %d\n", turn);
-                    printf("node_counter = %d\n", node_counter);
-                    printf("current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
+                    printf("這一 turn 有人沒有選項 QQ\n", turn);
                 }
             }
         }
