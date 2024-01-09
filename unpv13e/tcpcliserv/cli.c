@@ -94,7 +94,7 @@ void xchg_data(FILE* fp, int sockfd) {
     setup_non_blocking_io();
     printf("a\n");
     bool is_choose=true;
-    print_menu(0, choices[0], 3, 1);
+    print_menu(highlight, choices[0], 3, 1);
     for (; ; ) {
     	
         FD_ZERO(&rset);
@@ -146,10 +146,13 @@ void xchg_data(FILE* fp, int sockfd) {
                 {
                     printf("%s\n", recvline);
                 }
-            };
+            }
+            memset(recvline,'\0',sizeof(recvline));
             if (found != NULL){
             	is_choose=true;
-            	print_menu(0, choices[0], 3, 1);
+            	printf("aaa%s\n", recvline);
+            	print_menu(highlight, choices[0], 3, 1);
+            	found=NULL;
             }
         }
         
@@ -187,7 +190,7 @@ void xchg_data(FILE* fp, int sockfd) {
                     sprintf(sendline, "%d\n", user_choice+1);
                     is_choose=false;
                     n = strlen(sendline);
-                    printf("\n");
+                    printf("%d\n",user_choice+1);
                     Writen(sockfd, sendline, n);
                     
                     break;
