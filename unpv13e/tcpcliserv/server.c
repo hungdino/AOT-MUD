@@ -215,7 +215,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播EREN中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，我們懷念他。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，軍團下令作戰取消。\n");
                         someone_left = 1;
                         break;
                     }else{
@@ -236,7 +236,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播MIKASA中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，我們懷念她。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，軍團下令作戰取消。\n");
                         someone_left = 1;
                         break;
                     }else{
@@ -257,7 +257,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播ARMIN中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，我們懷念他。\n");
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，軍團下令作戰取消。\n");
                         someone_left = 1;
                         break;
                     }else{
