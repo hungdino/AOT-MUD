@@ -191,7 +191,8 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 int turn = current_node->characterArray[i];
                 if (turn == EREN)
                 {
-                    send_options(players[EREN], current_node->Eren);
+                    char** options = current_node->Eren;
+                    send_options(players[EREN], options);
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
                 }
