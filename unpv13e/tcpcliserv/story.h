@@ -9,17 +9,18 @@
 #define MIKASA 1
 #define ARMIN 2
 
-int decideNextNode(int currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
-    int erenChose[MAX_NODE] = {-1}; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
-    int mikasaChose[MAX_NODE] = {-1};
-    int arminChose[MAX_NODE] = {-1};
+// 故事節點結構
+typedef struct {
+    int     nodeSeriesNum;                                          // 節點編號
+    char    story[STORY_LENGTH];                                    // 故事提示
+    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
+    char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
+    char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
+    char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
+} StoryNode;
 
-<<<<<<< HEAD
-struct StoryNode* decideNextNode(StoryNode* current_node, int numOfNodePlayed) { // currentNode == numOfNodePlayed
-=======
->>>>>>> bc05022b9d0d834fb614360f98935b9eab111e61
-    int nextNode;
-
+StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* erenChose, int* mikasaChose, int* arminChose) {
+    int currentNode = current_node->nodeSeriesNum;
     switch (currentNode) {
     case 1:
         if (mikasaChose[numOfNodePlayed] == 1) {
@@ -213,20 +214,97 @@ struct StoryNode* decideNextNode(StoryNode* current_node, int numOfNodePlayed) {
         break;
     default:
         nextNode = -1; // 回報錯誤：章節不存在
-
     }
-    return nextNode;
-}
 
-// 故事節點結構
-typedef struct {
-    int     nodeSeriesNum;                                          // 節點編號
-    char    story[STORY_LENGTH];                                    // 故事提示
-    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
-    char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
-    char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
-    char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
-} StoryNode;
+
+    switch (nextNode)
+    {
+    case 1:
+        return &Main_node1;
+        break;
+    case 2:
+        return &Main_node2;
+        break;
+    case 3:
+        return &Main_node3;
+        break;
+    case 4:
+        return &Main_node4;
+        break;
+    case 5:
+        return &Main_node5;
+        break;
+    case 51:
+        return &Main_node5_right;
+        break;
+    case 52:
+        return &Main_node5_false;
+        break;
+    case 6:
+        return &Main_node6;
+        break;
+    case 7:
+        return &Main_node7;
+        break;
+    case 9:
+        return &TE_node7;
+        break;
+    case 8:
+        return &Mikasa_not_help_node6;
+        break;
+    case 10:
+        return &Mikasa_not_help_node7;
+        break;
+    case 11:
+        return &basement_node2;
+        break;
+    case 12:
+        return &basement_node3;
+        break;
+    case 13:
+        return &Mikasa_normal_node3;
+        break;
+    case 14:
+        return &Mikasa_normal_node4;
+        break;
+    case 15:
+        return &normal_bad_end;
+        break;
+    case 16:
+        return &castle_bad_end;
+        break;
+    case 17:
+        return &sleep_bad_end;
+        break;
+    case 18:
+        return &TE_bad_end1;
+        break;
+    case 41:
+        return &TE_bad_end2;
+        break;
+    case 42:
+        return &TE_bad_end3;
+        break;
+    case 99:
+        return &HE;
+        break;
+    case 55:
+        return &TE;
+        break;
+    case 20:
+        return &NE;
+        break;
+    case 1207:
+        return &TE2;
+        break;
+    case 22:
+        return &NE_another;
+        break;
+    default:
+        break;
+    }
+    
+}
 
 StoryNode Main_node1 = {
     1, // nodeSeriesNum
