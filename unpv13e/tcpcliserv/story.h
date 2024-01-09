@@ -9,11 +9,17 @@
 #define MIKASA 1
 #define ARMIN 2
 
-int decideNextNode(int currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
-    int erenChose[MAX_NODE] = [1, 2, 1, 2, 2, 1, -1, 1, 2, ]; // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
-    int mikasaChose[MAX_NODE] = [1, 2, 1, 1, -1, 1];
-    int arminChose[MAX_NODE] = [1, 2, 2, 1, -1, -1, 2];
+// 故事節點結構
+typedef struct {
+    int     nodeSeriesNum;                                          // 節點編號
+    char    story[STORY_LENGTH];                                    // 故事提示
+    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
+    char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
+    char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
+    char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
+} StoryNode;
 
+int decideNextNode(StoryNode* currentNode, int numOfNodePlayed) { // currentNode == numOfNodePlayed
     int nextNode;
 
     switch (currentNode) {
@@ -214,15 +220,7 @@ int decideNextNode(int currentNode, int numOfNodePlayed) { // currentNode == num
     return nextNode;
 }
 
-// 故事節點結構
-typedef struct {
-    int     nodeSeriesNum;                                          // 節點編號
-    char    story[STORY_LENGTH];                                    // 故事提示
-    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
-    char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
-    char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
-    char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
-} StoryNode;
+
 
 StoryNode Main_node1 = {
     1, // nodeSeriesNum

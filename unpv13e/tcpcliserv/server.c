@@ -74,7 +74,6 @@ void send_welcome_message(int new_client_sock, int players_waiting, int spectato
 int receive_player_choice(int client_sock);
 void send_game_status_message(int client_sock, const char* message);
 void broadcast_story(int* client_socks, int num_clients, const char* story);
-int send_options_and_receive_choice(int client_sock, const char* options);
 struct StoryNode* decide_next_node(struct node* current_node, int* choices, int num_choices);
 int is_ending_node(int game_node_number);
 void broadcast_game_ending(int* client_socks, int num_clients, const char* ending_message);
@@ -236,7 +235,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }
-        next_node = decide_next_node(current_node, erenChose, mikasaChose, arminChose);
+        next_node = decideNextNode(current_node, erenChose, mikasaChose, arminChose);
         }
         
     }
@@ -349,12 +348,12 @@ int receive_player_choice_1_to_3(int client_sock){
         }
     }
 }
-void send_game_status_message(int client_sock, const char* message);
-/*
-client_sock: The socket file descriptor for the client.
-message: The status message to be sent (e.g., waiting for more players, game starting, etc.).
-*/
-v
+void send_options(int client_sock, const char* options){
+    char options_msg[BUFFER_SIZE];
+    snprintf(options_msg, BUFFER_SIZE, "[選項1]：%s\n[選項2]：%s\n[選項3]：%s\n", options[1], options[2], options[3]);
+    send_message(client_sock, options_msg);
+}
+
 void broadcast_story(int* client_socks, int num_clients, const char* story);
 /*
 client_socks: Array of client socket file descriptors.
