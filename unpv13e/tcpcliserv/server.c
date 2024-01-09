@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
             send_welcome_message(newsockfd, buffer  ,total_players, total_spectators);
             int player_or_spectator = receive_player_choice_paly_or_spectate(newsockfd);
             if (player_or_spectator == TO_PLAY) {
-                send_message(newsockfd, "恭喜您，您已編入戰鬥部隊。\n");
+                send_message(newsockfd, "恭喜您，您已編入戰鬥部隊，請稍候其他隊員準備完畢即可進入戰場。\n");
                 players[total_players] = newsockfd;
                 total_players++;
                 total_clients++;
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
                     close(newsockfd);
                     continue;
                 }
-                send_message(newsockfd, "您已被列為支援部隊，請稍候，稍後即可觀戰\n");
+                send_message(newsockfd, "您已被列為支援部隊，請稍候，稍後即可觀戰。\n");
                 spectators[total_spectators] = newsockfd;
                 total_spectators++;
                 total_clients++;
@@ -174,9 +174,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     {
         current_node = next_node;
         node_counter++;
-
+        int some_left = 0;
         // 判斷是否為結局
-        if(is_ending_node(current_node->nodeSeriesNum)){
+        if(is_ending_node(current_node->nodeSeriesNum || some_left == 1)){
         // 進入結局
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             broadcast(players, total_players, spectators, total_spectators, "戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
@@ -187,6 +187,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
             for (int i = 0; i < MAX_PLAYERS; i++){
+                printf("開始送選項\n", i);
                 int turn = current_node->characterArray[i];
                 if (turn == EREN)
                 {
