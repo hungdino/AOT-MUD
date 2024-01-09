@@ -197,6 +197,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         }else if(some_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
+            break;
         }else{
             // 送故事
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
@@ -240,7 +241,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     }else{
                         printf("米卡莎選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了 %s\n", current_node->Eren[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了 %s\n", current_node->Mikasa[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
@@ -261,7 +262,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     }else{
                         printf("阿爾敏選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
-                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了 %s\n", current_node->Eren[decided_choice-1]);
+                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了 %s\n", current_node->Armin[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
