@@ -36,7 +36,6 @@
 
 void error(const char *msg);
 void game_process(int* players, int* spectators, int total_players, int total_spectators);
-void send_options(int client_sock, const char** options);
 void send_message(int client_sock, const char* msg);
 void sigchld_handler(int s);
 void send_welcome_message(int new_client_sock, char buffer[BUFFER_SIZE], int players_waiting, int spectators_waiting);
@@ -192,7 +191,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 if (turn == EREN)
                 {
                     char options[BUFFER_SIZE];
-                    snprintf(options, BUFFER_SIZE, "請勇敢的士兵艾連做出選擇：[1]%s[2]%s[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
+                    snprintf(options, BUFFER_SIZE, "請艾連做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
                     send_message(players[EREN], options);
                     printf("已送出選項給 Eren\n");
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
@@ -200,13 +199,17 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 }
                 else if (turn == MIKASA)
                 {
-                    send_options(players[MIKASA], current_node->Mikasa);
+                    char options[BUFFER_SIZE];
+                    snprintf(options, BUFFER_SIZE, "請米卡莎做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Mikasa[0], current_node->Mikasa[1], current_node->Mikasa[2]);
+                    send_message(players[MIKASA], options);
                     int decided_choice = receive_player_choice_1_to_3(players[MIKASA]);
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
                 }
                 else if (turn == ARMIN)
                 {
-                    send_options(players[ARMIN], current_node->Armin);
+                    char options[BUFFER_SIZE];
+                    snprintf(options, BUFFER_SIZE, "請阿爾敏做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Armin[0], current_node->Armin[1], current_node->Armin[2]);
+                    send_message(players[ARMIN], options);
                     int decided_choice = receive_player_choice_1_to_3(players[ARMIN]);
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
                 }
@@ -293,19 +296,6 @@ int receive_player_choice_1_to_3(int client_sock){
             return random;
         }
     }
-}
-void send_options(int client_sock, const char** options){
-    printf("%s\n", options[0]);
-    printf("%s\n", options[1]);
-    printf("%s\n", options[2]);
-    send_message(client_sock, "請選擇您的選項：\n");
-    send_message(client_sock, "1. ");
-    send_message(client_sock, options[0]);
-    send_message(client_sock, "2. ");
-    send_message(client_sock, options[1]);
-    send_message(client_sock, "3. ");
-    send_message(client_sock, options[2]);
-    printf("選項訊息皆送出\n");
 }
 
 void broadcast(int* player_sock, int player_num, int*spectator_sock, int spectator_num, const char* msg){
