@@ -206,9 +206,14 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
                     if (decided_choice == -1)
                     {
-                        printf("廣播ARMIN中離。\n");
+                        printf("廣播EREN中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，我們懷念他。\n");
                         some_left = 1;
+                    }else{
+                        printf("艾連選擇了 %d\n", decided_choice);
+                        char choice_message[BUFFER_SIZE];
+                        snprintf(choice_message, BUFFER_SIZE, "艾連選擇了 %d\n", current_node->Eren[decided_choice-1]);
+                        broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
                 }
@@ -224,6 +229,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         printf("廣播MIKASA中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，我們懷念她。\n");
                         some_left = 1;
+                    }else{
+                        printf("米卡莎選擇了 %d\n", decided_choice);
+                        char choice_message[BUFFER_SIZE];
+                        snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇了 %d\n", current_node->Eren[decided_choice-1]);
+                        broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
                 }
@@ -239,6 +249,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         printf("廣播ARMIN中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，我們懷念他。\n");
                         some_left = 1;
+                    }else{
+                        printf("阿爾敏選擇了 %d\n", decided_choice);
+                        char choice_message[BUFFER_SIZE];
+                        snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇了 %d\n", current_node->Eren[decided_choice-1]);
+                        broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
                 }
@@ -311,19 +326,17 @@ int receive_player_choice_1_to_3(int client_sock){
     int n;
     srand(time(NULL));
     int random = rand() % 3 + 1;
-    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) <= 0) {
+    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             printf("讀取使用者選項超時，回傳 random。\n");
             return random;
-        }
-        else if(n == 0){
-            printf("使用者已離開，receive_player_choice_1_to_3 回傳 -1。\n");
-            return -1;
-        }
-        else{
+        }else {
             perror("讀取選項錯誤，回傳 random。\n");
             return random;
         }
+    }else if(n == 0){
+        printf("使用者已離開，receive_player_choice_1_to_3 回傳 -1。\n");
+        return -1;
     }else{
         int choice = atoi(buffer);
         if (choice == 1 || choice == 2 || choice == 3){
