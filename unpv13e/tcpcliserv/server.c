@@ -200,7 +200,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 if (turn == EREN)
                 {
                     char options[BUFFER_SIZE];
-                    snprintf(options, BUFFER_SIZE, "請艾連做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
+                    snprintf(options, BUFFER_SIZE, "_請艾連做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
                     send_message(players[EREN], options);
                     printf("已送出選項給EREN。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
@@ -215,7 +215,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 else if (turn == MIKASA)
                 {
                     char options[BUFFER_SIZE];
-                    snprintf(options, BUFFER_SIZE, "請米卡莎做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Mikasa[0], current_node->Mikasa[1], current_node->Mikasa[2]);
+                    snprintf(options, BUFFER_SIZE, "_請米卡莎做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Mikasa[0], current_node->Mikasa[1], current_node->Mikasa[2]);
                     send_message(players[MIKASA], options);
                     printf("已送出選項給MIKASA。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[MIKASA]);
@@ -230,7 +230,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 else if (turn == ARMIN)
                 {
                     char options[BUFFER_SIZE];
-                    snprintf(options, BUFFER_SIZE, "請阿爾敏做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Armin[0], current_node->Armin[1], current_node->Armin[2]);
+                    snprintf(options, BUFFER_SIZE, "_請阿爾敏做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Armin[0], current_node->Armin[1], current_node->Armin[2]);
                     send_message(players[ARMIN], options);
                     printf("已送出選項給ARMIN。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[ARMIN]);
