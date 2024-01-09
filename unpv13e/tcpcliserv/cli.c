@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <termios.h>
+#include <stdbool.h>
 char id[MAXLINE];
 
 
@@ -69,7 +70,7 @@ char *choices[3][3] = {
 void xchg_data(FILE* fp, int sockfd) {
     int maxfdp1, stdineof, peer_exit, n;
     fd_set rset;
-    char sendline[MAXLINE], recvline[MAXLINE];
+    char sendline[MAXLINE], recvline[MAXLINE], buff[MAXLINE],recvlinex[MAXLINE];
 
     set_scr();
     //clr_scr();
@@ -92,6 +93,8 @@ void xchg_data(FILE* fp, int sockfd) {
     
     setup_non_blocking_io();
     printf("a\n");
+    bool is_choose=true;
+    print_menu(0, choices[0], 3, 1);
     for (; ; ) {
         FD_ZERO(&rset);
         maxfdp1 = 0;
@@ -108,6 +111,12 @@ void xchg_data(FILE* fp, int sockfd) {
         Select(maxfdp1, &rset, NULL, NULL, NULL);
         if (FD_ISSET(sockfd, &rset)) {  /* socket is readable */
             n = read(sockfd, recvline, MAXLINE);
+            //recvlinex=recvline;
+            
+            //recvline[strcspn(recvline, "\n")] = '\0';
+            char *found = strchr(recvline, '_');
+            
+            
             if (n == 0) {
                 if (stdineof == 1)
                     return;         /* normal termination */
@@ -138,13 +147,17 @@ void xchg_data(FILE* fp, int sockfd) {
                     printf("%s\n", recvline);
                 }
             };
+            if (found != NULL){
+            	is_choose=true;
+            	print_menu(0, choices[0], 3, 1);
+            }
         }
         
         if (FD_ISSET(fileno(fp), &rset)) {  /* input is readable */
             
             int n_choices = 3;
             int start_row = 2;
-                
+            if(is_choose){
                 char ch;
             	read(STDIN_FILENO, &ch, 1);
                 switch (ch) {
@@ -167,7 +180,8 @@ void xchg_data(FILE* fp, int sockfd) {
                         printf("(leaving...)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
-                    };
+                    }
+                    break;
                 case 'e': // Enter键
                     int user_choice = highlight;
                     sprintf(sendline, "%d\n", user_choice+1);
@@ -175,11 +189,29 @@ void xchg_data(FILE* fp, int sockfd) {
                     
                     Writen(sockfd, sendline, n);
                     printf("%sout\n", sendline);
+                    is_choose=false;
+                    break;
+                }
+             }
+             else{
+             	char ch;
+            	read(STDIN_FILENO, &ch, 1);
+                switch (ch) {
+                case 'q': // 退出
+                    if (peer_exit)
+                        return;
+                    else {
+                        printf("(leaving...)\n");
+                        stdineof = 1;
+                        Shutdown(sockfd, SHUT_WR);      /* send FIN */
+                    }
+                    break;
                 }
             }
+            }
+           }
          
-        
-    }
+    
 };
 
 
@@ -200,6 +232,7 @@ main(int argc, char** argv)
     Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
     strcpy(id, argv[2]);
     printf("%s\n", ascii_art);
+    printf("親愛的玩家您好，歡迎進入遊戲\n以下是操作說明\na d 左右移動\nq   退出\ne   送出\n\n", ascii_art);
     sleep(0);
     Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
 	
