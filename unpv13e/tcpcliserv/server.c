@@ -188,7 +188,6 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
             for (int i = 0; i < MAX_PLAYERS; i++){
-                printf("開始送選項\n", i);
                 int turn = current_node->characterArray[i];
                 if (turn == EREN)
                 {
@@ -293,9 +292,9 @@ int receive_player_choice_1_to_3(int client_sock){
     }
 }
 void send_options(int client_sock, const char** options){
-    for(int i = 0; i < 3; i++){
-        printf("選項 %d: %s\n", i+1, options[i]);
-    }
+    printf("%s\n", options[0]);
+    printf("%s\n", options[1]);
+    printf("%s\n", options[2]);
     send_message(client_sock, "請選擇您的選項：\n");
     send_message(client_sock, "1. ");
     send_message(client_sock, options[0]);
