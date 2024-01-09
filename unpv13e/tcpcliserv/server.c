@@ -305,7 +305,7 @@ void sigchld_handler(int s) {
 void send_welcome_message(int new_client_sock, char buffer[BUFFER_SIZE] , int players_waiting, int spectators_waiting){
     char welcome_msg[BUFFER_SIZE];
     int number_of_this_play = players_waiting + spectators_waiting + 1;
-    snprintf(welcome_msg, BUFFER_SIZE, "勇敢的%s士兵您好，歡迎來到瑪利亞之牆奪還戰，您是第 %d 位編列進此戰役的士兵，目前有 %d 位士兵想要親身參與奪還戰， %d 位想要邊支援後勤邊觀戰，請選擇您要 [1] 親身參與奪還戰 [2] 觀戰。\n", buffer, number_of_this_play,  players_waiting, spectators_waiting);
+    snprintf(welcome_msg, BUFFER_SIZE, "勇敢的%s士兵您好，歡迎來到瑪利亞之牆奪還戰，您是第 %d 位編列進此戰役的士兵，目前有 %d 位士兵想要直接參與奪還戰， %d 位想要作為後勤觀戰，請選擇您要 [1] 親身參與奪還戰 [2] 觀戰。\n", buffer, number_of_this_play,  players_waiting, spectators_waiting);
     send_message(new_client_sock, welcome_msg);
 }
 
