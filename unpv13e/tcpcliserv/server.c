@@ -147,6 +147,7 @@ int main(int argc, char *argv[]) {
                 if (pid == 0) {
                     // child process
                     game_process(players, spectators, total_players, total_spectators);
+                    printf("一局遊戲結束，該局的 child process 正常關閉。\n");
                     exit(0);
                 }
             }
@@ -179,7 +180,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     StoryNode* current_node;
     StoryNode* next_node = &Main_node1;
     int node_counter = 0;
-    int some_left = 0;
+    int someone_left = 0;
     while (1)
     {
         current_node = next_node;
@@ -194,12 +195,12 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             broadcast(players, total_players, spectators, total_spectators, "戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
-        }else if(some_left == 1){
+        }else if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else{
-            // 送故事
+            // 進入新章節，送故事
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
             for (int i = 0; i < MAX_PLAYERS; i++){
@@ -215,7 +216,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     {
                         printf("廣播EREN中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，我們懷念他。\n");
-                        some_left = 1;
+                        someone_left = 1;
                         break;
                     }else{
                         printf("艾連選擇了 %d\n", decided_choice);
@@ -236,7 +237,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     {
                         printf("廣播MIKASA中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，我們懷念她。\n");
-                        some_left = 1;
+                        someone_left = 1;
                         break;
                     }else{
                         printf("米卡莎選擇了 %d\n", decided_choice);
@@ -257,7 +258,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     {
                         printf("廣播ARMIN中離。\n");
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，我們懷念他。\n");
-                        some_left = 1;
+                        someone_left = 1;
                         break;
                     }else{
                         printf("阿爾敏選擇了 %d\n", decided_choice);
