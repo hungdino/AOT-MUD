@@ -295,9 +295,9 @@ int receive_player_choice_1_to_3(int client_sock){
 void send_options(int client_sock, const char** options){
     char options_msg[BUFFER_SIZE];
     snprintf(options_msg, BUFFER_SIZE, "[選項1]：%s\n[選項2]：%s\n[選項3]：%s\n", options[0], options[1], options[2]);
+    printf("組合選項：%s\n", options_msg);
     send_message(client_sock, options_msg);
-    printf("送出選項訊息：%s\n", options_msg);
-
+    printf("選項訊息送出\n");
 }
 
 void broadcast(int* player_sock, int player_num, int*spectator_sock, int spectator_num, const char* msg){
