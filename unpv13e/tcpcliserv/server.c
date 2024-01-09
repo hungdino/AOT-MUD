@@ -205,6 +205,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     send_message(players[EREN], options);
                     printf("已送出選項給EREN。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
+                    if (decided_choice == -1)
+                    {
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連已離我們而去，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+                        some_left = 1;
+                    }
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
                 }
                 else if (turn == MIKASA)
@@ -214,6 +219,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     send_message(players[MIKASA], options);
                     printf("已送出選項給MIKASA。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[MIKASA]);
+                    if (decided_choice == -1)
+                    {
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎已離我們而去，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+                        some_left = 1;
+                    }
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
                 }
                 else if (turn == ARMIN)
@@ -223,6 +233,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     send_message(players[ARMIN], options);
                     printf("已送出選項給ARMIN。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[ARMIN]);
+                    if (decided_choice == -1)
+                    {
+                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏已離我們而去，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+                        some_left = 1;
+                    }
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
                 }
                 else
@@ -296,7 +311,12 @@ int receive_player_choice_1_to_3(int client_sock){
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             printf("讀取使用者選項超時，回傳 random。\n");
             return random;
-        }else{
+        }
+        else if(n == 0){
+            printf("使用者已離開，receive_player_choice_1_to_3 回傳 -1。\n");
+            return -1;
+        }
+        else{
             perror("讀取選項錯誤，回傳 random。\n");
             return random;
         }
