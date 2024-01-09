@@ -630,6 +630,7 @@ void traverseNode(StoryNode node) {
 
 StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* erenChose, int* mikasaChose, int* arminChose) {
     int currentNode = current_node->nodeSeriesNum;
+    int nextNode;
     switch (currentNode) {
     case 1:
         if (mikasaChose[numOfNodePlayed] == 1) {
