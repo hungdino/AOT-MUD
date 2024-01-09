@@ -38,7 +38,7 @@ void error(const char *msg);
 void game_process(int* players, int* spectators, int total_players, int total_spectators);
 void send_message(int client_sock, const char* msg);
 void sigchld_handler(int s);
-void send_welcome_message(int new_client_sock, int players_waiting, int spectators_waiting);
+void send_welcome_message(int new_client_sock, char buffer[BUFFER_SIZE] ,int players_waiting, int spectators_waiting);
 void broadcast_story(int* client_socks, int num_clients, const char* story);
 int is_ending_node(int game_node_number);
 void broadcast(int* player_sock, int player_num, int*spectator_sock, int spectator_num, const char* msg);
@@ -88,7 +88,6 @@ int main(int argc, char *argv[]) {
         while(1){
             newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
             int n = Readline(newsockfd, buffer, BUFFER_SIZE);
-            int n = Readline(newsockfd, buffer, BUFFER_SIZE);
 	        if (n > 0) {
     		    buffer[strcspn(buffer, "\n")] = '\0'; // 去掉換行符
 	        }
@@ -104,7 +103,7 @@ int main(int argc, char *argv[]) {
                 perror("setsockopt failed\n");
             }
             // 送歡迎訊息
-            send_welcome_message(newsockfd, total_players, total_spectators);
+            send_welcome_message(newsockfd, buffer  ,total_players, total_spectators);
             int player_or_spectator = receive_player_choice_paly_or_spectate(newsockfd);
             if (player_or_spectator == TO_PLAY) {
                 send_message(newsockfd, "恭喜您，您已編入戰鬥部隊。\n");
