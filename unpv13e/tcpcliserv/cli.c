@@ -73,6 +73,9 @@ void xchg_data(FILE* fp, int sockfd) {
 
     set_scr();
     //clr_scr();
+    size_t len = strlen(id);
+    id[len] = '\n';
+    id[len + 1] = '\0';
     Writen(sockfd, id, strlen(id));
     printf("sent: %s\n", id);
     readline(sockfd, recvline, MAXLINE);
@@ -167,7 +170,7 @@ void xchg_data(FILE* fp, int sockfd) {
                     };
                 case 'e': // Enter键
                     int user_choice = highlight;
-                    sprintf(sendline, "%d", user_choice);
+                    sprintf(sendline, "%d\n", user_choice+1);
                     n = strlen(sendline);
                     
                     Writen(sockfd, sendline, n);
