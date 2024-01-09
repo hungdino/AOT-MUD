@@ -583,6 +583,27 @@ StoryNode NE_another = {
         "與神秘角色合作"//(阿爾敏不重要)
     }
 };
+
+StoryNode out_of_senario = {
+    9877, // nodeSeriesNum
+    "圖如其然的變異種一口吞下所有人，瑪利亞之牆奪還戰以失敗告終。", // story
+    {ARMIN, MIKASA, EREN}, // characterArray
+    {   // 艾連的選項
+        "None",
+        "None",
+        "None"
+    },
+    {   // 米卡莎的選項
+        "None",
+        "None",
+        "None"
+    },
+    {   // 阿爾敏的選項
+        "None",
+        "None",
+        "None"
+    }
+};
 /*
 void traverseNode(StoryNode node) {
     printf("進入節點 %d.\n", node.nodeSeriesNum);
@@ -907,6 +928,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         return &NE_another;
         break;
     default:
+        return &out_of_senario;
         break;
     }
     
