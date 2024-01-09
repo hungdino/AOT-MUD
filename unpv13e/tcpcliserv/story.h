@@ -8,12 +8,13 @@
 #define EREN 0
 #define MIKASA 1
 #define ARMIN 2
+#define NONE_CHARACTER -1
 
 // 故事節點結構
 typedef struct {
     int     nodeSeriesNum;                                          // 節點編號
     char    story[STORY_LENGTH];                                    // 故事提示
-    char    characterArray[MAX_CHARACTERS_PER_NODE][ID_LENGTH];     // 這個節點的選擇順序 e.g. {"Eren", "Mikasa", "Armin"}
+    int    characterArray[MAX_CHARACTERS_PER_NODE];                 // 這個節點的選擇順序 e.g. EREN, MIKASA, ARMIN
     char    Eren[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];    // 儲存艾連的選項
     char    Mikasa[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];  // 儲存米卡莎的選項
     char    Armin[MAX_OPTIONS_PER_CHARACTER + 1][OPTION_DESC_LENGTH];   // 儲存阿爾敏的選項
@@ -22,7 +23,7 @@ typedef struct {
 StoryNode Main_node1 = {
     1, // nodeSeriesNum
     "在艾連製造出的巨人骨架保護下，米卡莎與阿爾敏總算從托洛斯特區安然無恙的返回，艾連自己從巨人身體中走了出來，並表示他想起了父親曾告訴他所有事情只要回到家裡的地下室就會有所解答。", // story
-    {"Eren", "Mikasa", "Armin"}, // characterArray
+    {EREN, MIKASA, ARMIN}, // characterArray
     {   // 艾連的選項
         "None",
         "聽從阿爾敏的選擇",
@@ -46,7 +47,7 @@ StoryNode Main_node1 = {
 StoryNode Main_node2 = {
     2, // nodeSeriesNum
     "阿爾敏表示自己一定可以說服駐紮軍團，在他發表的言論下，果真令駐紮軍團大部分的士兵動搖了，但膽小如鼠的指揮官奇茲已經失去思考的能力，仍執意要下令攻擊，就在千鈞一髮之際，駐紮兵團的總司令達特 · 皮克希斯來到，並制止了奇茲。在聽完艾連所知的所有關於巨人化的情報後，達特決定採用阿爾敏的建議，要利用巨人化後的艾連將托洛斯特區被摧毀的城門洞口補起來。", // story
-    {"Armin", "None", "None"}, // characterArray
+    {ARMIN, NONE_CHARACTER, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "None",
         "None",
@@ -69,7 +70,7 @@ StoryNode Main_node2 = {
 StoryNode Main_node3 = {
     3, // nodeSeriesNum
     "達特發表了激昂的演說穩住了軍心，準備開始作戰，精銳部隊以伊恩為首，眾人趕抵了巨石旁，伊恩向艾倫表示今天將有許多士兵因他而死，請務必懷踹必死的決心出發。艾倫準備變身巨人，菁英部隊射出代表開始的綠色信號"
-    ,{"Mikasa","Eren", "None"}, // characterArray
+    ,{MIKASA, EREN, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "在城牆上回頭看了自己家的方向一眼，劃破手掌變身",
         "在城牆上回頭看了自己家的方向一眼，跳向對面的房屋劃破手掌變身",//TE差分，正解
@@ -90,7 +91,7 @@ StoryNode Main_node3 = {
 StoryNode Main_node4 = {
     4, // nodeSeriesNum
     "將巨人引到角落的引誘部隊雖然盡量避免與巨人開戰，還是損失了約兩成的兵力，艾連雖然成功變身為巨人，卻開始向米卡莎展開攻擊，里柯認為行動失敗，向天空發射了表示任務失敗的紅色煙霧彈"
-    ,{"Armin","Mikasa","Eren"}, // characterArray
+    ,{ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
        "掙扎試圖控制自己的巨人身體(機率失敗)",//這裡在client端roll有沒有成功，沒有就直接傳2給server
         "對周圍的士兵造成混亂",
@@ -111,7 +112,7 @@ StoryNode Main_node4 = {
 StoryNode Main_node5 = {
     5, // nodeSeriesNum
     "艾倫往自己臉上揮的那拳讓他停下攻擊，伊恩命令精銳部隊繼續掩護艾連，除去周圍的巨人，改變作戰計畫為保護艾連不被巨人攻擊，因為他認為能巨人化的艾連是人類反擊的唯一希望，阿爾敏看到煙霧後也趕到了艾連所在的地方，得知行動失敗後打算將艾連救出來。\n艾倫此時陷入夢中，眼前是自己的媽媽和米卡莎，忽然聽見了敲門聲，原來是阿爾敏在門外邀請他們兩個一起野餐。但是與此同時窗外又傳來模糊的聲音"
-    ,{"Mikasa","Armin", "None"}, // characterArray
+    ,{MIKASA, ARMIN, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "None",
         "None",
@@ -132,7 +133,7 @@ StoryNode Main_node5 = {
 StoryNode Main_node5_right = {
     51, // nodeSeriesNum
     "艾倫此時陷入夢中，眼前是自己的媽媽和米卡莎，忽然聽見了敲門聲，原來是阿爾敏在門外邀請他們兩個一起野餐。但是與此同時窗外又傳來模糊的聲音"
-    ,{"Eren","None", "None"}, // characterArray
+    ,{EREN, NONE_CHARACTER, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "拒絕阿爾敏，今天要吃媽媽煮的東西",
         "同意阿爾敏，和米卡莎一起出門",
@@ -153,7 +154,7 @@ StoryNode Main_node5_right = {
 StoryNode Main_node5_false = {
     52, // nodeSeriesNum
     "艾倫此時陷入夢中，眼前是自己的媽媽和米卡莎，忽然聽見了敲門聲，原來是阿爾敏在門外邀請他們兩個一起野餐。但是與此同時窗外又傳來模糊的聲音"
-    ,{"Eren","None", "None"}, // characterArray
+    ,{EREN, NONE_CHARACTER, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "拒絕阿爾敏，今天要吃媽媽煮的東西",
         "同意阿爾敏，和米卡莎一起出門",
@@ -174,7 +175,7 @@ StoryNode Main_node5_false = {
 StoryNode Main_node6 = {
     6, // nodeSeriesNum
     "另一邊，被阿爾敏成功喚醒的巨人化艾連將巨石成功舉了起來，並開始向洞口走去，伊恩見狀立馬命令所有精銳部隊拚死掩護艾連，但巨人們卻開始不再關注到處移動的人，直直往艾倫過去，幸好大量精銳部隊也趕到。"
-    ,{"Armin","Mikasa","None",}, // characterArray
+    ,{ARMIN, MIKASA, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "None",
         "None",
@@ -197,7 +198,7 @@ StoryNode Main_node6 = {
 StoryNode Main_node7 = {
     7, // nodeSeriesNum
     "艾連不斷往洞口方向行走，但是此時突然聽見了遠方的尖叫聲，原來是約翰的立體機動裝置壞掉了，然而此時卻有有巨人朝他走來...。"
-     ,{"Mikasa","Eren","None"}, // characterArray
+     ,{MIKASA, EREN, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "回頭查看",
         "相信隊友，我已經無路可退",
@@ -218,7 +219,7 @@ StoryNode Main_node7 = {
 StoryNode TE_node7 = {
     9, // nodeSeriesNum
     "艾連不斷往洞口方向行走，但是此時突然聽見了遠方的尖叫聲，原來是約翰的立體機動裝置壞掉了，然而此時卻有有金髮女巨人朝他走來...。"
-     ,{"Mikasa","Eren","None"}, // characterArray
+     ,{MIKASA, EREN, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "回頭查看",
         "相信隊友，我已經無路可退",
@@ -238,7 +239,7 @@ StoryNode TE_node7 = {
 StoryNode Mikasa_not_help_node6 = {
     8, // nodeSeriesNum
     "另一邊，被阿爾敏成功喚醒的巨人化艾連將巨石成功舉了起來，並開始向洞口走去，伊恩見狀立馬命令所有精銳部隊拚死掩護艾連，但巨人們卻開始不再關注到處移動的人，直直往艾倫過去，但可惜剛剛被削減大量人士，只有些許部隊也趕到援助。"
-    ,{"Armin","Mikasa","None",}, // characterArray
+    ,{ARMIN, MIKASA, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "None",
         "None",
@@ -258,7 +259,7 @@ StoryNode Mikasa_not_help_node6 = {
 StoryNode Mikasa_not_help_node7 = {
     10, // nodeSeriesNum
     "巨人被吸引的狀況不夠樂觀，人數一直在瘋狂的減少，眼看情勢岌岌可危，隊長伊恩親自以破軍之勢衝向巨人，但也不過是無謂的犧牲，艾倫還在半路上，必須掩護才行"
-    ,{"Armin","Mikasa","Eren",}, // characterArray
+    ,{ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "尋找一個相對安全的地點暫時隱蔽，等待局勢有所好轉或援助到達",
         "繼續往前",
@@ -280,7 +281,7 @@ StoryNode Mikasa_not_help_node7 = {
 StoryNode basement_node2 = {
     11, // nodeSeriesNum
     "害怕於艾倫被軍團擊殺，三人決定還是前往地下室探索秘密。途中，他們必須穿越被巨人佔領的區域，面對潛在的危險和未知的威脅。他們也需要與時間賽跑，以免被其他不明勢力捕獲", // story
-    {"Armin","Mikasa","Eren"},  // characterArray
+    {ARMIN, MIKASA, EREN},  // characterArray
     {   // 艾連的選項
         "帶頭穿越危險區域",
         "保持隱蔽，避免與巨人直接交鋒",
@@ -301,7 +302,7 @@ StoryNode basement_node2 = {
 StoryNode basement_node3 = {
     12, // nodeSeriesNum
     "在三人千辛萬苦到達地下室後，卻發現門和艾倫手上的鑰匙完全對不上。", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "回到軍團",
         "把鑰匙反過來再試一次",
@@ -322,7 +323,7 @@ StoryNode basement_node3 = {
 StoryNode Mikasa_normal_node3 = {
     13, // nodeSeriesNum
     "米卡莎加入普通士兵，專注於誘導巨人遠離艾倫和巨石的區域。她的行動成功吸引了一部分巨人的注意力，降低了對艾倫的直接威脅。另外一方，艾連雖然成功變身為巨人，卻開始向士兵所在的鐘樓展開攻擊，里柯認為行動失敗，向天空發射了表示任務失敗的紅色煙霧彈", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)
         "對周圍的士兵造成混亂",
@@ -343,7 +344,7 @@ StoryNode Mikasa_normal_node3 = {
 StoryNode Mikasa_normal_node4 = {
     14, // nodeSeriesNum
     "阿爾敏成功說服了團長，能巨人化的艾連是人類反擊的唯一希望，艾倫旁邊的士兵一面努力和他周旋，一面盡力抵抗巨人，就在此刻，一個穿著斗篷的身影突然到來", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -364,7 +365,7 @@ StoryNode Mikasa_normal_node4 = {
 StoryNode normal_bad_end = {
     15, // nodeSeriesNum
     "你死了，進擊的巨人世界觀裡，死亡就是如此的不講道理，因為這不是特別關鍵的部分，我甚至懶得幫你額外打特別的文字來紀念遊戲結束，希望下局你至少能出現不一樣的文字，晚安", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -384,7 +385,7 @@ StoryNode normal_bad_end = {
 StoryNode castle_bad_end = {
     16, // nodeSeriesNum
     "親愛的玩家，你打算直接在城牆上變成巨人?恭喜成功壓死了附近的士兵和城牆，計畫失敗，至於還在作戰區的艾倫呢?可能是瘋了吧", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -405,7 +406,7 @@ StoryNode castle_bad_end = {
 StoryNode sleep_bad_end = {
     17, // nodeSeriesNum
     "艾倫的媽媽和他打了個招呼去午睡了...奇怪，艾倫的媽媽不是死了嗎", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -425,7 +426,7 @@ StoryNode sleep_bad_end = {
 StoryNode TE_bad_end1 = {
     40, // nodeSeriesNum
     "艾倫回頭查看發生的情況，沒有想到巨人早已經近在眼前，不斷看這裡的米卡莎立刻趕到此處，艾倫鬆了一口氣，但巨人彷彿有神智一般抓住轉瞬即逝的機會出拳...我猜，也許你不該如此依靠米卡莎", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -446,7 +447,7 @@ StoryNode TE_bad_end1 = {
 StoryNode TE_bad_end2 = {
     41, // nodeSeriesNum
     "艾倫回頭查看發生的情況，沒有想到巨人早已經近在眼前，專注於救援讓中的米卡莎沒有注意到艾倫，讓他只能獨自面對。在巨人的重拳來臨之前，他思考著，難道沒有米卡莎我不行嗎?又或許是缺了什麼?", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -467,7 +468,7 @@ StoryNode TE_bad_end2 = {
 StoryNode TE_bad_end3 = {
     42, // nodeSeriesNum
     "艾倫回頭查看發生的情況，沒有想到巨人早已經近在眼前，專注中的米卡莎沒有注意到艾倫，讓他只能獨自面對，艾倫想起了自己跳下城牆時回望家的那一眼，毅然爆發出力量將石頭往門上一丟，同時重重往巨人臉上揍下去。可惜巨人提前扣住了他的手，也許一切就到這裡了。\n你已經很接近真相了，但還缺一點點東西，是運氣，或是天馬行空的想像力?", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -488,7 +489,7 @@ StoryNode TE_bad_end3 = {
 StoryNode HE = {
     99, // nodeSeriesNum
     "艾倫終於將石塊堵在門口，一直注意此處的米卡莎迅速趕到將艾蓮從巨人中拉了出來，調查兵團與駐紮兵團精銳部隊的合力下，眾人清除了托洛斯特區內的所有巨人，並抓獲了兩隻分別為四公尺與七公尺級的巨人，這是人類首次抵禦巨人入侵成功的壯舉，但是共有207人死亡或失蹤，897人輕重傷\n恭喜你抵達了原作中的HE結局，拯救了特洛斯特區!不過我們埋了一些隱藏的彩蛋要試看看嗎", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -508,7 +509,7 @@ StoryNode HE = {
 StoryNode TE = {
     55, // nodeSeriesNum
     "艾倫回頭查看發生的情況，沒有想到巨人早已經近在眼前，專注於救援讓(差分:因救援讓死亡)中的米卡莎沒有注意到艾倫，讓他只能獨自面對，艾倫想起了自己跳下城牆時回望家的那一眼，毅然爆發出力量將石頭往門上一丟，同時重重往金髮女巨人臉上揍下去。在艾倫觸碰到金髮巨人的一瞬，他忽然覺得自己多出了奇怪的力量。而同一時間趕來的米卡莎和阿爾敏，卻看見破損的城牆上奇異的人臉...\n歡迎來到遊戲的終章，親愛的玩家，祝你玩得開心", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -529,7 +530,7 @@ StoryNode TE = {
 StoryNode NE = {
     20, // nodeSeriesNum
     "艾倫終於將石塊堵在門口，調查兵團與駐紮兵團精銳部隊的合力下，眾人清除了托洛斯特區內的所有巨人，並抓獲了兩隻分別為四公尺與七公尺級的巨人，這是人類首次抵禦巨人入侵成功的壯舉，但是共有207人死亡或失蹤，897人輕重傷，只可惜，一位拯救摯友的女戰士永遠停在了那片戰場。", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -550,7 +551,7 @@ StoryNode NE = {
 StoryNode TE2 = {
     1207, // nodeSeriesNum
     "艾倫打開了地下室，看見了他理應看見的世界真相。\n\n\n\n\n\n但我不能劇透，你也想知道世界的真相的話，可以打開第三季或去看完結篇", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -571,7 +572,7 @@ StoryNode TE2 = {
 StoryNode NE_another = {
     22, // nodeSeriesNum
     "原來是緊急趕回的調查兵團，很遺憾，他們似乎認為這個計畫並不適合執行，艾倫被救了回來，但也僅此而已了", // story
-    {"Armin","Mikasa","Eren"}, // characterArray
+    {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
@@ -588,6 +589,7 @@ StoryNode NE_another = {
         "與神秘角色合作"//(阿爾敏不重要)
     }
 };
+/*
 void traverseNode(StoryNode node) {
     printf("進入節點 %d.\n", node.nodeSeriesNum);
     printf("故事：%s\n", node.story);
@@ -627,9 +629,10 @@ void traverseNode(StoryNode node) {
         }
     }
 }
-
+*/
 StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* erenChose, int* mikasaChose, int* arminChose) {
     int currentNode = current_node->nodeSeriesNum;
+    int nextNode;
     switch (currentNode) {
     case 1:
         if (mikasaChose[numOfNodePlayed] == 1) {
