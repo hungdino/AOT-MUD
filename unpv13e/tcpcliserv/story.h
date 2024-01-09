@@ -43,7 +43,7 @@ StoryNode Main_node1 = {
 StoryNode Main_node2 = {
     2, // nodeSeriesNum
     "阿爾敏表示自己一定可以說服駐紮軍團，在他發表的言論下，果真令駐紮軍團大部分的士兵動搖了，但膽小如鼠的指揮官奇茲已經失去思考的能力，仍執意要下令攻擊，就在千鈞一髮之際，駐紮兵團的總司令達特 · 皮克希斯來到，並制止了奇茲。在聽完艾連所知的所有關於巨人化的情報後，達特決定採用阿爾敏的建議，要利用巨人化後的艾連將托洛斯特區被摧毀的城門洞口補起來。", // story
-    {ARMIN, NONE_CHARACTER, NONE_CHARACTER}, // characterArray
+    { EREN, ARMIN,NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "先觀察周圍的情況，找到最佳變身位置，以減少自身暴露於敵人視線的風險。",
         "直接變身成巨人，你不相信我OwO?",
@@ -88,7 +88,7 @@ StoryNode Main_node4 = {
     {   // 艾連的選項
        "掙扎試圖控制自己的巨人身體(機率失敗)",//這裡在client端roll有沒有成功，沒有就直接傳2給server
         "對周圍的士兵造成混亂",
-        "None"
+        "對周圍的士兵造成混亂"
     },
     {   // 米卡莎的選項
         "不認為艾倫會失敗，衝到艾倫的臉上試圖喚醒他",//正解
@@ -680,7 +680,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         if(erenChose[numOfNodePlayed] == 2){
         	nextNode=16;
         }
-        if (arminChose[numOfNodePlayed] == 2{
+        if (arminChose[numOfNodePlayed] == 2){
                     nextNode = 15;
         }
         if (arminChose[numOfNodePlayed] == 3&&erenChose[numOfNodePlayed]) {
