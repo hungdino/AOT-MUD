@@ -107,6 +107,16 @@ int main(int argc, char *argv[]) {
             int player_or_spectator = receive_player_choice_paly_or_spectate(newsockfd);
             if (player_or_spectator == TO_PLAY) {
                 send_message(newsockfd, "恭喜您，您已編入戰鬥部隊，請稍候其他隊員準備完畢即可進入戰場。\n");
+                if (total_players == 0){
+                    send_message(newsockfd, "接下您，您將作為艾連完成瑪利亞之牆奪還戰，為了那自由的天空，獻出你的心臟吧！心臓をささげよ！\n");
+                }
+                else if (total_players == 1){
+                    send_message(newsockfd, "接下您，您將作為米卡莎參與瑪利亞之牆奪還戰，為了妳心愛的艾連，獻出妳的心臟吧！心臓をささげよ！\n");
+                }
+                else if (total_players == 2){
+                    send_message(newsockfd, "接下您，您將作為阿爾敏帶領瑪利亞之牆奪還戰，為了人類文明的存續，獻出你的心臟吧！心臓をささげよ！\n");
+                }
+                
                 players[total_players] = newsockfd;
                 total_players++;
                 total_clients++;
@@ -193,7 +203,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     char options[BUFFER_SIZE];
                     snprintf(options, BUFFER_SIZE, "請艾連做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
                     send_message(players[EREN], options);
-                    printf("已送出選項給 Eren\n");
+                    printf("已送出選項給EREN。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
                 }
@@ -202,6 +212,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     char options[BUFFER_SIZE];
                     snprintf(options, BUFFER_SIZE, "請米卡莎做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Mikasa[0], current_node->Mikasa[1], current_node->Mikasa[2]);
                     send_message(players[MIKASA], options);
+                    printf("已送出選項給MIKASA。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[MIKASA]);
                     mikasaChose[current_node->nodeSeriesNum] = decided_choice;
                 }
@@ -210,6 +221,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     char options[BUFFER_SIZE];
                     snprintf(options, BUFFER_SIZE, "請阿爾敏做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Armin[0], current_node->Armin[1], current_node->Armin[2]);
                     send_message(players[ARMIN], options);
+                    printf("已送出選項給ARMIN。\n");
                     int decided_choice = receive_player_choice_1_to_3(players[ARMIN]);
                     arminChose[current_node->nodeSeriesNum] = decided_choice;
                 }
