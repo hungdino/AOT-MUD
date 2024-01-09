@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include <time.h>
 
-#define TIMEOUT_SECONDS 10
+#define TIMEOUT_SECONDS 60
 #define MAX_CLIENTS 10
 #define MAX_PLAYERS 3
 #define MAX_SPECATORS 7
