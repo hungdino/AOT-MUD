@@ -191,8 +191,10 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 int turn = current_node->characterArray[i];
                 if (turn == EREN)
                 {
-                    char** options = current_node->Eren;
-                    send_options(players[EREN], options);
+                    char options[BUFFER_SIZE];
+                    snprintf(options, BUFFER_SIZE, "請勇敢的士兵艾連做出選擇：[1]%s[2]%s[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
+                    send_message(players[EREN], options);
+                    printf("已送出選項給 Eren\n");
                     int decided_choice = receive_player_choice_1_to_3(players[EREN]);
                     erenChose[current_node->nodeSeriesNum] = decided_choice;
                 }
