@@ -313,7 +313,7 @@ return: TO_PLAY or TO_SPECTATE or -1
     char buffer[BUFFER_SIZE];
     int n;
     srand(time(NULL));
-    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) == 0){
+    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) <= 0){
         return -1;
     }else{
         int choice = atoi(buffer);
@@ -326,7 +326,7 @@ return: TO_PLAY or TO_SPECTATE or -1
 }
 int receive_player_choice_1_to_3(int client_sock){
 /*
-return: the choice of the player
+回傳值：選項 1, 2, 3 or random
 */
     char buffer[BUFFER_SIZE];
     int n;
@@ -334,15 +334,18 @@ return: the choice of the player
     int random = rand() % 3 + 1;
     if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            printf("讀取使用者選項超時。\n");
+            printf("讀取使用者選項超時，回傳 random。\n");
             return random;
         }else{
-            int choice = atoi(buffer);
-            if (choice == 1 || choice == 2 || choice == 3){
-                return choice;
-            }else{
-                return random;
-            }
+            perror("讀取選項錯誤，回傳 random。\n");
+            return random;
+        }
+    }else{
+        int choice = atoi(buffer);
+        if (choice == 1 || choice == 2 || choice == 3){
+            return choice;
+        }else{
+            return random;
         }
     }
 }
