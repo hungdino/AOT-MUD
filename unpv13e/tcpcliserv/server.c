@@ -36,6 +36,7 @@
 
 void error(const char *msg);
 void game_process(int* players, int* spectators, int total_players, int total_spectators);
+void send_options(int client_sock, const char** options);
 void send_message(int client_sock, const char* msg);
 void sigchld_handler(int s);
 void send_welcome_message(int new_client_sock, char buffer[BUFFER_SIZE], int players_waiting, int spectators_waiting);
@@ -291,9 +292,9 @@ int receive_player_choice_1_to_3(int client_sock){
         }
     }
 }
-void send_options(int client_sock, const char* options){
+void send_options(int client_sock, const char** options){
     char options_msg[BUFFER_SIZE];
-    snprintf(options_msg, BUFFER_SIZE, "[選項1]：%s\n[選項2]：%s\n[選項3]：%s\n", options[1], options[2], options[3]);
+    snprintf(options_msg, BUFFER_SIZE, "[選項1]：%s\n[選項2]：%s\n[選項3]：%s\n", options[0], options[1], options[2]);
     send_message(client_sock, options_msg);
 }
 
