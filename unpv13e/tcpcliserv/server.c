@@ -227,12 +227,12 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                             decided_choice = rand() % 3 + 1;
                             printf("艾連被隨機決定了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
-                            snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Eren[decided_choice-1]);
                             broadcast(players, total_players, spectators, total_spectators, choice_message);
                         }else{
                             printf("艾連選擇了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
-                            snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Eren[decided_choice-1]);
                             broadcast(players, total_players, spectators, total_spectators, choice_message);
                         }
                     }else{
@@ -265,12 +265,12 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                             decided_choice = rand() % 3 + 1;
                             printf("米卡莎被隨機決定了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
-                            snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Mikasa[decided_choice-1]);
                             broadcast(players, total_players, spectators, total_spectators, choice_message);
                         }else{
                             printf("米卡莎選擇了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
-                            snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Mikasa[decided_choice-1]);
                             broadcast(players, total_players, spectators, total_spectators, choice_message);
                         }
                     }else{
