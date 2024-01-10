@@ -392,7 +392,7 @@ return: TO_PLAY or TO_SPECTATE or -1
 }
 int receive_player_choice_1_to_3(int client_sock){
 /*
-回傳值：選項 1, 2, 3 or random
+回傳值：選項 1, 2, 3 or random or -1
 */
     char buffer[BUFFER_SIZE];
     int n;
@@ -400,11 +400,11 @@ int receive_player_choice_1_to_3(int client_sock){
     int random = rand() % 3 + 1;
     if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            printf("讀取使用者選項超時，回傳 random。\n");
-            return random;
+            printf("讀取使用者選項超時，使用者已離開，receive_player_choice_1_to_3 回傳 -1 結束遊戲\n");
+            return -1;
         }else {
-            perror("讀取選項錯誤，回傳 random。\n");
-            return random;
+            printf("讀取使用者選項超時，使用者已離開，receive_player_choice_1_to_3 回傳 -1 結束遊戲\n");
+            return -1;
         }
     }else if(n == 0){
         printf("使用者已離開，receive_player_choice_1_to_3 回傳 -1。\n");
