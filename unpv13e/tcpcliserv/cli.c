@@ -9,8 +9,8 @@
 #include <stdbool.h>
 char id[MAXLINE];
 
-
-
+struct sockaddr_in	servaddr;
+struct termios origt;
 const char* ascii_art =
 "   _______ __________________ _______  _______  _           _______  _      \n"
 "  (  ___  )\\__   __/\\__   __/(  ___  )(  ____ \\| \\    /\\   (  ___  )( (    /| \n"
@@ -41,10 +41,24 @@ void set_scr() {		// set screen to 80 * 25 color mode
 
 void setup_non_blocking_io() {
     struct termios newt;
-    tcgetattr(STDIN_FILENO, &newt);
+
+    // 获取当前的设置，并保存
+    tcgetattr(STDIN_FILENO, &origt);
+
+    // 复制原始设置以进行修改
+    newt = origt;
+
+    // 修改设置为非阻塞和无回显
     newt.c_lflag &= ~(ICANON | ECHO);
+
+    // 应用新设置
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 }
+void restore_original_settings() {
+    // 恢复原始的termios设置
+    tcsetattr(STDIN_FILENO, TCSANOW, &origt);
+}
+
 void print_menu(int highlight, char* choices[], int n_choices, int start_row) {
     //printf("\033[%d;1H", start_row);
     printf("\033[G"); // 将光标移动到当前行的最左边
@@ -67,12 +81,11 @@ char *choices[3][3] = {
         {"A", "B", "C"},
         {"选项 A", "选项 B", "选项 C"}
     };
-void xchg_data(FILE* fp, int sockfd) {
-    start:	
+bool xchg_data(FILE* fp, int sockfd) {
     int maxfdp1, stdineof, peer_exit, n;
     fd_set rset;
     char sendline[MAXLINE], recvline[MAXLINE], buff[MAXLINE],recvlinex[MAXLINE];
-
+    char *found2 = NULL;
     set_scr();
     //clr_scr();
     size_t len = strlen(id);
@@ -118,7 +131,7 @@ void xchg_data(FILE* fp, int sockfd) {
             //recvline[strcspn(recvline, "\n")] = '\0';
             char *found = strchr(recvline, '_');
             
-            
+            found2 = strchr(recvline, 'X');
             if (n == 0) {
                 if (stdineof == 1)
                     return;         /* normal termination */
@@ -129,7 +142,13 @@ void xchg_data(FILE* fp, int sockfd) {
             }
             else if (n > 0) {
                 recvline[n] = '\0';
-                if (recvline[0] == '6')
+                if (recvline[0] == '5')
+                {
+                    printf("game over\n");
+                    stdineof = 1;
+                    Shutdown(sockfd, SHUT_WR);
+                }
+                else if (recvline[0] == '6')
                 {
 
                     int random_number = (rand() % 4) + 1;
@@ -172,13 +191,11 @@ void xchg_data(FILE* fp, int sockfd) {
                     print_menu(highlight, choices[0], n_choices, start_row);
                     break;
                 case 'q': // 退出
-                    if (peer_exit)
-                        return;
-                    else {
                         printf("(leaving...)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
-                    }
+                        return 0;
+   
                     break;
                 case 'e': // Enter键
                     int user_choice = highlight;
@@ -186,34 +203,31 @@ void xchg_data(FILE* fp, int sockfd) {
                     is_choose=false;
                     n = strlen(sendline);
                     printf("%d\n",user_choice+1);
-		    	
-		  //  if(sendline==1&& recvline==){
-		  //	   Shutdown(sockfd, SHUT_WR);   
-               	  //	   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
-                  //       Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
-		  //	   printf("(reconnecting)\n");
-                  //       goto start;
-		  //  }
-		  
-
                     Writen(sockfd, sendline, n);
                     
                     break;
                 }
+                
              }
              else{
              	char ch;
             	read(STDIN_FILENO, &ch, 1);
                 switch (ch) {
                 case 'q': // 退出
-                    if (peer_exit)
-                        return;
-                    else {
+
                         printf("(leaving...)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
-                    }
+                        return 0;
+                    
                     break;
+                case 'x': // Enter键
+               	   if (found2 != NULL){
+                        close(sockfd);
+                        return 1;
+                        
+                   } 
+                   break;
                 }
             }
             }
@@ -227,11 +241,11 @@ int
 main(int argc, char** argv)
 {
     int					sockfd;
-    struct sockaddr_in	servaddr;
+    bool again=1;
 
     if (argc != 3)
         err_quit("usage: tcpcli <IPaddress> <ID>");
-
+    while(again){
     sockfd = Socket(AF_INET, SOCK_STREAM, 0);
 	
     bzero(&servaddr, sizeof(servaddr));
@@ -244,7 +258,8 @@ main(int argc, char** argv)
     sleep(0);
     Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
 	
-    xchg_data(stdin, sockfd);		/* do it all */
-
+    again=xchg_data(stdin, sockfd);		/* do it all */
+}
+	restore_original_settings();
     exit(0);
 }
