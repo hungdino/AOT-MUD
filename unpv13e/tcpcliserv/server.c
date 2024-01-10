@@ -360,6 +360,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     printf("這一 turn 有人沒有選項 QQ\n");
                 }
             }
+            if (someone_left == 1){
+                continue;
+            }
         }
         next_node = decide_Next_Node(current_node, current_node->nodeSeriesNum, erenChose, mikasaChose, arminChose);
     }
