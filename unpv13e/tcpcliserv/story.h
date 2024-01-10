@@ -606,12 +606,23 @@ int decide_to_roll_a_dice(int node_num, int character) {
     switch (node_num)
     {
     case 1:
+        if (character == ARMIN)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
+        break;
+    case 4:
         if (character == EREN)
             return ROLL_DICE;
         else
             return NOT_ROLL_DICE;
         break;
-    
+    case 13:
+        if (character == EREN)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
+        break;
     default:
         return -1;
         break;

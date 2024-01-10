@@ -194,11 +194,11 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         if(is_ending_node(current_node->nodeSeriesNum)){
         // 進入結局
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
-            broadcast(players, total_players, spectators, total_spectators, "親愛的士兵辛苦了，戰役已結束，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+            broadcast(players, total_players, spectators, total_spectators, "親愛的士兵辛苦了，戰役已結束，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else if(someone_left == 1){
-            broadcast(players, total_players, spectators, total_spectators, "戰役已提早終止，軍團將會盡全力搜救，請選擇 [1] 重新編隊，或 [2] 使用 Ctrl+C 離開。\n");
+            broadcast(players, total_players, spectators, total_spectators, "戰役已提早終止，軍團將會盡全力搜救，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else{
