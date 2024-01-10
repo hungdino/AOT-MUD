@@ -22,8 +22,7 @@
 #define TO_SPECTATE 2
 #define IS_ENDING_NODE 1
 #define NOT_ENDING_NODE 0
-#define ROLL_DICE 1
-#define NOT_ROLL_DICE 0
+
 
 // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
 #define CHOICE_NOT_AVAILABLE -1

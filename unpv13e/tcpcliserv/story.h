@@ -9,6 +9,8 @@
 #define MIKASA 1
 #define ARMIN 2
 #define NONE_CHARACTER -1
+#define ROLL_DICE 1
+#define NOT_ROLL_DICE 0
 
 // 故事節點結構
 typedef struct {
