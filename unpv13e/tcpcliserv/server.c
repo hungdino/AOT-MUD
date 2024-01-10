@@ -401,7 +401,7 @@ int receive_player_choice_1_to_3(int client_sock){
     int n;
     srand(time(NULL));
     int random = rand() % 3 + 1;
-    n = readline(client_sock, buffer, sizeof(buffer));
+    n = read(client_sock, buffer, sizeof(buffer));
     if (n < 0) { //errno == EAGAIN || errno == EWOULDBLOCK
         printf("讀取使用者選項超時，receive_player_choice_1_to_3 回傳 -1 結束遊戲\n");
         return -1;
