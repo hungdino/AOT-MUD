@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
             } else if (player_or_spectator == TO_SPECTATE) {
                 // 處理 Client 人數過多
                 if  (total_clients >= MAX_SPECATORS){
-                    send_message(newsockfd, "抱歉，此次戰役編制已滿，請加入下一場戰役。\n");
+                    send_message(newsockfd, "抱歉，此次戰役編制已滿，請加入下一場戰役。請選擇 Q 退出，X 重啟戰役。\n");
                     close(newsockfd);
                     continue;
                 }
@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
                 total_clients++;
             } else{ // player_or_spectator == -1
                 // 處理 Client 輸入錯誤
-                send_message(newsockfd, "抱歉，司令部無法確認您的志願，請加入下一場戰役。\n");
+                send_message(newsockfd, "抱歉，司令部無法確認您的志願，請加入下一場戰役。請選擇 Q 退出，X 重啟戰役。\n");
                 close(newsockfd);
                 continue;
             }
@@ -188,10 +188,21 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         node_counter++;
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
+        char player_check_buffer[BUFFER_SIZE];
+        int check_player1 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player2 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player3 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        if (check_player1 == 0 || check_player2 == 0 || check_player3 ==0){
+            someone_left = 1;
+            printf("有人中離了，someone_left = %d\n", someone_left);
+        }
+            
+        printf("check_player1 = %d\n", check_player1);
+        printf("check_player2 = %d\n", check_player2);
+        printf("check_player3 = %d\n", check_player3);
 
-        
         if(someone_left == 1){
-            broadcast(players, total_players, spectators, total_spectators, "戰役已提早終止，軍團將會盡全力搜救，請選擇 Q 退出，X 重啟戰役。\n");
+            broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else if(is_ending_node(current_node->nodeSeriesNum)){
