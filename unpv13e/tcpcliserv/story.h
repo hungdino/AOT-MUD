@@ -1,3 +1,4 @@
+
 #define MAX_OPTIONS_PER_CHARACTER 3
 #define MAX_CHARACTERS_PER_NODE 3
 #define OPTION_DESC_LENGTH 256
@@ -88,9 +89,9 @@ StoryNode Main_node4 = {
     "將巨人引到角落的引誘部隊雖然盡量避免與巨人開戰，還是損失了約兩成的兵力，艾連雖然成功變身為巨人，卻開始向米卡莎展開攻擊，里柯認為行動失敗，向天空發射了表示任務失敗的紅色煙霧彈"
     ,{ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
-       "掙扎試圖控制自己的巨人身體(機率失敗)",//這裡在client端roll有沒有成功，沒有就直接傳2給server
+       "對周圍的士兵造成混亂",//這裡在client端roll有沒有成功，沒有就直接傳2給server
         "對周圍的士兵造成混亂",
-        "對周圍的士兵造成混亂"
+        "掙扎試圖控制自己的巨人身體(機率失敗)"
     },
     {   // 米卡莎的選項
         "不認為艾倫會失敗，衝到艾倫的臉上試圖喚醒他",//正解
@@ -320,14 +321,14 @@ StoryNode Mikasa_normal_node3 = {
     "米卡莎加入普通士兵，專注於誘導巨人遠離艾倫和巨石的區域。她的行動成功吸引了一部分巨人的注意力，降低了對艾倫的直接威脅。另外一方，艾連雖然成功變身為巨人，卻開始向士兵所在的鐘樓展開攻擊，里柯認為行動失敗，向天空發射了表示任務失敗的紅色煙霧彈", // story
     {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
-        "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)
+        "對周圍的士兵造成混亂",//(成功直接到主節點6)
         "對周圍的士兵造成混亂",
-        "對周圍的士兵造成混亂"
+        "掙扎試圖控制自己的巨人身體"
     },
     {   // 米卡莎的選項
-        "迅速返回艾倫身邊",//(回到主節點5)
+        "迅速返回艾倫身邊，衝到艾倫的臉上試圖喚醒他",//(回到主節點5)
         "繼續留在原地，吸引更多巨人的注意力",//(正確)
-        "None"
+        "坐在地上大哭，艾倫我們還沒結婚啊"
     },
     {   // 阿爾敏的選項
         "試圖直接接近並干預艾倫",
@@ -341,7 +342,7 @@ StoryNode Mikasa_normal_node4 = {
     "阿爾敏成功說服了團長，能巨人化的艾連是人類反擊的唯一希望，艾倫旁邊的士兵一面努力和他周旋，一面盡力抵抗巨人，就在此刻，一個穿著斗篷的身影突然到來", // story
     {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
-        "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
+        "對周圍的士兵造成混亂",//(成功直接到主節點6)，阿這裡強制會失敗就好
         "對周圍的士兵造成混亂",
         "對周圍的士兵造成混亂"
     },
@@ -441,7 +442,7 @@ StoryNode TE_bad_end1 = {
 
 StoryNode TE_bad_end2 = {
     41, // nodeSeriesNum
-    "艾倫回頭查看發生的情況，沒有想到巨人早已經近在眼前，專注於救援讓中的米卡莎沒有注意到艾倫，讓他只能獨自面對。在巨人的重拳來臨之前，他思考著，難道沒有米卡莎我不行嗎?又或許是缺了什麼?", // story
+    "艾倫回頭查看發生的情況，沒有想到巨人早已經近在眼前，無力趕到的米卡莎讓他只能獨自面對。在巨人的重拳來臨之前，他思考著，難道沒有米卡莎我不行嗎?又或許是缺了什麼?", // story
     {ARMIN, MIKASA, EREN}, // characterArray
     {   // 艾連的選項
         "掙扎試圖控制自己的巨人身體",//(成功直接到主節點6)，阿這裡強制會失敗就好
@@ -661,13 +662,14 @@ int decide_to_roll_a_dice(int node_num, int character) {
         else
             return NOT_ROLL_DICE;
         break;
-    case 12:
-        if (character == MIKASA)
+    case 13:
+        if (character == EREN)
             return ROLL_DICE;
         else
             return NOT_ROLL_DICE;
-    case 13:
-        if (character == EREN)
+        break;
+    case 12:
+        if (character == MIKASA)
             return ROLL_DICE;
         else
             return NOT_ROLL_DICE;
@@ -716,6 +718,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         if (arminChose[numOfNodePlayed] == 2){
                     nextNode = 15;
+                    break;
         }
         if (arminChose[numOfNodePlayed] == 3&&erenChose[numOfNodePlayed]) {
                     nextNode = 23;
@@ -733,7 +736,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         break;
     case 4:
-        if (erenChose[numOfNodePlayed] == 1) {
+        if (erenChose[numOfNodePlayed] == 3) {
             nextNode = 6;//跳到清醒
         }
         else if (mikasaChose[numOfNodePlayed] == 1) {
@@ -828,9 +831,9 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         else {
             if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
-                nextNode = 40;//TE 死亡米咖殺有來
+                nextNode = 41;//TE 死亡米咖殺有來
             else if (erenChose[3] == 3)
-                nextNode = 41;//TE 死亡
+                nextNode = 42;//TE 死亡
             else
                 nextNode = 55;//TE
         }
@@ -873,11 +876,11 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         break;//解釋一下這裡，每個人開門都有機率，要艾倫米卡莎其中一個開成功，阿爾敏不開門才能把門打開，機率失敗默認二
     case 13:
-        if (erenChose[numOfNodePlayed] == 1) {
+        if (erenChose[numOfNodePlayed] == 3) {
             nextNode = 6;
         }//TE2地下室
         else if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 8;//回主點6
+            nextNode = 5;//回主點6
         }
         else if (mikasaChose[numOfNodePlayed] == 2 && arminChose[numOfNodePlayed] == 2) {
             nextNode = 14;//冰長
