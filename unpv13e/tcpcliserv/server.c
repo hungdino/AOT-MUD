@@ -225,7 +225,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
-                            decided_choice = rand() % 2 + 1;
+                            decided_choice = rand() % 3 + 1;
                             printf("艾連被隨機決定了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
                             snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Armin[decided_choice-1]);
@@ -262,7 +262,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
-                            decided_choice = rand() % 2 + 1;
+                            decided_choice = rand() % 3 + 1;
                             printf("米卡莎被隨機決定了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
                             snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Armin[decided_choice-1]);
@@ -299,7 +299,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
-                            decided_choice = rand() % 2 + 1;
+                            decided_choice = rand() % 3 + 1;
                             printf("阿爾敏被隨機決定了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
                             snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇「%s」\n", current_node->Armin[decided_choice-1]);

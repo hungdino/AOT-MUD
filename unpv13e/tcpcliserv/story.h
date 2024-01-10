@@ -616,7 +616,6 @@ int decide_to_roll_a_dice(int node_num, int character) {
         return -1;
         break;
     }
-    
 }
 /*
 void traverseNode(StoryNode node) {
