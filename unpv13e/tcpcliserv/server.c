@@ -248,6 +248,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         someone_left = 1;
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         printf("check_player1 = %d\n", check_player1);
+                        
                         goto ending;
                     }
                     char options[BUFFER_SIZE];
@@ -258,8 +259,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播EREN中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+                        //broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
+                        check_player1 =0;
                         goto ending;
                     }else if (decided_choice == 3){
                         int roll = decide_to_roll_a_dice(current_node->nodeSeriesNum, EREN);
@@ -316,8 +318,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播MIKASA中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+                        //broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
+                        check_player2 =0;
                         goto ending;
                     }else if (decided_choice == 3){
                         int roll = decide_to_roll_a_dice(current_node->nodeSeriesNum, MIKASA);
@@ -373,8 +376,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     if (decided_choice == -1)
                     {
                         printf("廣播ARMIN中離。\n");
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+                        //broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
+                        check_player3 =0;
                         goto ending;
                     }else if (decided_choice == 3){
                         int roll = decide_to_roll_a_dice(current_node->nodeSeriesNum, ARMIN);
