@@ -192,12 +192,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         int check_player1 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
         int check_player2 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
         int check_player3 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-        if (check_player1 == 0 || check_player2 == 0 || check_player3 ==0){
+        printf("check_player1 = %d\n", check_player1);
+        printf("check_player2 = %d\n", check_player2);
+        printf("check_player3 = %d\n", check_player3);
+        if (check_player1 == 0 || check_player2 == 0 || check_player3 == 0){
             someone_left = 1;
             printf("有人中離了，someone_left = %d\n", someone_left);
-            printf("check_player1 = %d\n", check_player1);
-            printf("check_player2 = %d\n", check_player2);
-            printf("check_player3 = %d\n", check_player3);
+
         }
             
 
