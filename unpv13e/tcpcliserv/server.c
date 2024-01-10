@@ -37,7 +37,7 @@
 
 void error(const char *msg);
 void game_process(int* players, int* spectators, int total_players, int total_spectators);
-void send_message(int client_sock, const char* msg);
+int send_message(int client_sock, const char* msg);
 void sigchld_handler(int s);
 void send_welcome_message(int new_client_sock, char buffer[BUFFER_SIZE], int players_waiting, int spectators_waiting);
 void broadcast_story(int* client_socks, int num_clients, const char* story);
@@ -340,13 +340,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
 }
 
 
-void send_message(int client_sock, const char* msg) {
+int send_message(int client_sock, const char* msg) {
     int n = send(client_sock, msg, strlen(msg), 0);
-    if (n <= 0)
-    {
+    if (n < 0) {
         perror("ERROR writing to socket");
+        return -1;
     }
-    
+    return n;
 }
 
 void sigchld_handler(int s) {
