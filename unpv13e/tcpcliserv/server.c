@@ -339,20 +339,14 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     }
 }
 
-void send_message(int client_sock, const char* msg) {
-    size_t len = strlen(msg);
-    ssize_t total_sent = 0;
-    ssize_t sent;
 
-    while (total_sent < len) {
-        sent = send(client_sock, msg + total_sent, len - total_sent, 0);
-        if (sent < 0) {
-            if (errno == EINTR) continue;
-            perror("ERROR on send");
-            return;
-        }
-        total_sent += sent;
+void send_message(int client_sock, const char* msg) {
+    int n = send(client_sock, msg, strlen(msg), 0);
+    if (n <= 0)
+    {
+        perror("ERROR writing to socket");
     }
+    
 }
 
 void sigchld_handler(int s) {
@@ -396,7 +390,7 @@ int receive_player_choice_1_to_3(int client_sock){
     int n;
     srand(time(NULL));
     int random = rand() % 3 + 1;
-    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) < 0) {
+    if ((n = recv(client_sock, buffer, BUFFER_SIZE)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             printf("讀取使用者選項超時，回傳 random。\n");
             return random;
