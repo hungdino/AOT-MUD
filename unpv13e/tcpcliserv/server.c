@@ -390,7 +390,7 @@ int receive_player_choice_1_to_3(int client_sock){
     int n;
     srand(time(NULL));
     int random = rand() % 3 + 1;
-    if ((n = recv(client_sock, buffer, BUFFER_SIZE)) < 0) {
+    if ((n = recv(client_sock, buffer, BUFFER_SIZE, 0)) < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             printf("讀取使用者選項超時，回傳 random。\n");
             return random;
