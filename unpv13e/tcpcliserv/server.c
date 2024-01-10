@@ -22,6 +22,8 @@
 #define TO_SPECTATE 2
 #define IS_ENDING_NODE 1
 #define NOT_ENDING_NODE 0
+#define ROLL_DICE 1
+#define NOT_ROLL_DICE 0
 
 // 固定選項為 1, 2, 3，初始化（還沒選）為 -1，該選項不能選為 0
 #define CHOICE_NOT_AVAILABLE -1
@@ -218,6 +220,22 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
                         break;
+                    }else if (decided_choice == 3){
+                        int roll = decide_to_roll_a_dice(current_node, EREN);
+                        if (roll == ROLL_DICE){
+                            // assign random choice between 1 and 2
+                            srand(time(NULL));
+                            decided_choice = rand() % 2 + 1;
+                            printf("艾連被隨機決定了 %d\n", decided_choice);
+                            char choice_message[BUFFER_SIZE];
+                            snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            broadcast(players, total_players, spectators, total_spectators, choice_message);
+                        }else{
+                            printf("艾連選擇了 %d\n", decided_choice);
+                            char choice_message[BUFFER_SIZE];
+                            snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            broadcast(players, total_players, spectators, total_spectators, choice_message);
+                        }
                     }else{
                         printf("艾連選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
@@ -239,6 +257,22 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
                         break;
+                    }else if (decided_choice == 3){
+                        int roll = decide_to_roll_a_dice(current_node, MIKASA);
+                        if (roll == ROLL_DICE){
+                            // assign random choice between 1 and 2
+                            srand(time(NULL));
+                            decided_choice = rand() % 2 + 1;
+                            printf("米卡莎被隨機決定了 %d\n", decided_choice);
+                            char choice_message[BUFFER_SIZE];
+                            snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            broadcast(players, total_players, spectators, total_spectators, choice_message);
+                        }else{
+                            printf("米卡莎選擇了 %d\n", decided_choice);
+                            char choice_message[BUFFER_SIZE];
+                            snprintf(choice_message, BUFFER_SIZE, "米卡莎選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            broadcast(players, total_players, spectators, total_spectators, choice_message);
+                        }
                     }else{
                         printf("米卡莎選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
@@ -260,6 +294,22 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
                         someone_left = 1;
                         break;
+                    }else if (decided_choice == 3){
+                        int roll = decide_to_roll_a_dice(current_node, ARMIN);
+                        if (roll == ROLL_DICE){
+                            // assign random choice between 1 and 2
+                            srand(time(NULL));
+                            decided_choice = rand() % 2 + 1;
+                            printf("阿爾敏被隨機決定了 %d\n", decided_choice);
+                            char choice_message[BUFFER_SIZE];
+                            snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            broadcast(players, total_players, spectators, total_spectators, choice_message);
+                        }else{
+                            printf("阿爾敏選擇了 %d\n", decided_choice);
+                            char choice_message[BUFFER_SIZE];
+                            snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇「%s」\n", current_node->Armin[decided_choice-1]);
+                            broadcast(players, total_players, spectators, total_spectators, choice_message);
+                        }
                     }else{
                         printf("阿爾敏選擇了 %d\n", decided_choice);
                         char choice_message[BUFFER_SIZE];
@@ -350,7 +400,8 @@ int receive_player_choice_1_to_3(int client_sock){
         int choice = atoi(buffer);
         if (choice == 1 || choice == 2 || choice == 3){
             return choice;
-        }else{
+        }
+        else{
             return random;
         }
     }

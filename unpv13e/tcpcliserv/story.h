@@ -602,6 +602,22 @@ StoryNode NE_another2 = {
         "與神秘角色合作"//(阿爾敏不重要)
     }
 };
+int decide_to_roll_a_dice(int node_num, int character) {
+    switch (node_num)
+    {
+    case 1:
+        if (character == EREN)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
+        break;
+    
+    default:
+        return -1;
+        break;
+    }
+    
+}
 /*
 void traverseNode(StoryNode node) {
     printf("進入節點 %d.\n", node.nodeSeriesNum);
