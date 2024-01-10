@@ -189,15 +189,15 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
 
-        // 判斷是否為結局
-        if(is_ending_node(current_node->nodeSeriesNum)){
-        // 進入結局
-            broadcast(players, total_players, spectators, total_spectators, current_node->story);
-            broadcast(players, total_players, spectators, total_spectators, "親愛的士兵辛苦了，戰役已結束，請選擇 Q 退出，X 重啟戰役。\n");
+        
+        if(someone_left == 1){
+            broadcast(players, total_players, spectators, total_spectators, "戰役已提早終止，軍團將會盡全力搜救，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
-        }else if(someone_left == 1){
-            broadcast(players, total_players, spectators, total_spectators, "戰役已提早終止，軍團將會盡全力搜救，請選擇 Q 退出，X 重啟戰役。\n");
+        }else if(is_ending_node(current_node->nodeSeriesNum)){
+            // 進入結局
+            broadcast(players, total_players, spectators, total_spectators, current_node->story);
+            broadcast(players, total_players, spectators, total_spectators, "親愛的士兵辛苦了，戰役已結束，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else{
