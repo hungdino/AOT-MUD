@@ -661,6 +661,11 @@ int decide_to_roll_a_dice(int node_num, int character) {
         else
             return NOT_ROLL_DICE;
         break;
+    case 12:
+        if (character == MIKASA)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
     case 13:
         if (character == EREN)
             return ROLL_DICE;
