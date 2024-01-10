@@ -192,19 +192,6 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         node_counter++;
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
-        char player_check_buffer[BUFFER_SIZE];
-        int check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-        int check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-        int check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-        if (check_player1 == 0 || check_player2 == 0 || check_player3 == 0){
-            someone_left = 1;
-            printf("有人中離了，someone_left = %d\n", someone_left);
-            printf("check_player1 = %d\n", check_player1);
-            printf("check_player2 = %d\n", check_player2);
-            printf("check_player3 = %d\n", check_player3);
-        }else{
-            printf("通過 player 連線測試，Player 都還在\n");
-        }
         
         if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
@@ -217,6 +204,20 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else{
+            char player_check_buffer[BUFFER_SIZE];
+            int check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+            int check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+            int check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+            if (check_player1 == 0 || check_player2 == 0 || check_player3 == 0){
+                someone_left = 1;
+                printf("有人中離了，someone_left = %d\n", someone_left);
+                printf("check_player1 = %d\n", check_player1);
+                printf("check_player2 = %d\n", check_player2);
+                printf("check_player3 = %d\n", check_player3);
+                continue;
+            }else{
+                printf("通過 player 連線測試，Player 都還在\n");
+            }
             // 進入新章節，送故事
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
@@ -224,13 +225,6 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 int turn = current_node->characterArray[i];
                 if (turn == EREN)
                 {
-                    check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-                    if (check_player1 == 0){
-                        someone_left = 1;
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
-                        printf("check_player1 = %d\n", check_player1);
-                        break;
-                    }
                     char options[BUFFER_SIZE];
                     snprintf(options, BUFFER_SIZE, "_請艾連做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Eren[0], current_node->Eren[1], current_node->Eren[2]);
                     send_message(players[EREN], options);
@@ -269,13 +263,6 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 }
                 else if (turn == MIKASA)
                 {
-                    check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-                    if (check_player2 == 0){
-                        someone_left = 1;
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
-                        printf("check_player2 = %d\n", check_player2);
-                        break;
-                    }
                     char options[BUFFER_SIZE];
                     snprintf(options, BUFFER_SIZE, "_請米卡莎做出選擇：\n[1]%s\n[2]%s\n[3]%s\n", current_node->Mikasa[0], current_node->Mikasa[1], current_node->Mikasa[2]);
                     send_message(players[MIKASA], options);
@@ -313,13 +300,6 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 }
                 else if (turn == ARMIN)
                 {
-                    check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-                    if (check_player3 == 0){
-                        someone_left = 1;
-                        broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
-                        printf("check_player3 = %d\n", check_player3);
-                        break;
-                    }
                     char options[BUFFER_SIZE];
                     snprintf(options, BUFFER_SIZE, "_請阿爾敏做出選擇\n[1]%s\n[2]%s\n[3]%s\n", current_node->Armin[0], current_node->Armin[1], current_node->Armin[2]);
                     send_message(players[ARMIN], options);
