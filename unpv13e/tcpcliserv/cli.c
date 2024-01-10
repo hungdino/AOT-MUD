@@ -38,12 +38,24 @@ void clr_scr() {
 void set_scr() {		// set screen to 80 * 25 color mode
     printf("\x1B[=3h");
 };
+void set_blocking_echo() {
+    struct termios tty;
+    
+    // 获取当前的终端设置
+    tcgetattr(STDIN_FILENO, &tty);
 
+    // 设置终端为阻塞模式并启用回显
+    tty.c_lflag |= ICANON;
+    tty.c_lflag |= ECHO;
+
+    // 应用这些更改
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
 void setup_non_blocking_io() {
     struct termios newt;
 
     // 获取当前的设置，并保存
-    tcgetattr(STDIN_FILENO, &origt);
+    
 
     // 复制原始设置以进行修改
     newt = origt;
@@ -194,7 +206,7 @@ bool xchg_data(FILE* fp, int sockfd) {
                         printf("(leaving...)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
-                        restore_original_settings();
+                        //restore_original_settings();
                         return 0;
    
                     break;
@@ -216,16 +228,16 @@ bool xchg_data(FILE* fp, int sockfd) {
                 switch (ch) {
                 case 'q': // 退出
 
-                        printf("(leaving...)\n");
+                        printf("(leaving2)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
-                        restore_original_settings();
+                        //restore_original_settings();
                         return 0;
                     
                     break;
                 case 'x': // Enter键
                	   if (found2 != NULL){
-                        close(sockfd);
+                        Shutdown(sockfd, SHUT_WR); 
                         return 1;
                         
                    } 
@@ -250,7 +262,7 @@ main(int argc, char** argv)
     while(again){
     clr_scr();
     sockfd = Socket(AF_INET, SOCK_STREAM, 0);
-	
+    tcgetattr(STDIN_FILENO, &origt);
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERV_PORT);
@@ -263,6 +275,7 @@ main(int argc, char** argv)
     clr_scr();
     again=xchg_data(stdin, sockfd);		/* do it all */
 }
-    restore_original_settings();
+    set_blocking_echo();
+    printf("aaa");
     exit(0);
 }
