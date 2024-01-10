@@ -192,7 +192,22 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         node_counter++;
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
-        
+        char player_check_buffer[BUFFER_SIZE];
+        int check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        if (check_player1 == 0){
+            someone_left = 1;
+            broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+        }else if(check_player2 == 0){
+            someone_left = 1;
+            broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+        }else if(check_player3 == 0){
+            someone_left = 1;
+            broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+        }else{
+            printf("通過 Player 連線測試，Player 都還在\n");
+        }
         if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
@@ -204,24 +219,25 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
             break;
         }else{
-            char player_check_buffer[BUFFER_SIZE];
-            int check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-            int check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-            int check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-            if (check_player1 == 0 || check_player2 == 0 || check_player3 == 0){
-                someone_left = 1;
-                printf("有人中離了，someone_left = %d\n", someone_left);
-                printf("check_player1 = %d\n", check_player1);
-                printf("check_player2 = %d\n", check_player2);
-                printf("check_player3 = %d\n", check_player3);
-                continue;
-            }else{
-                printf("通過 player 連線測試，Player 都還在\n");
-            }
             // 進入新章節，送故事
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
             for (int i = 0; i < MAX_PLAYERS; i++){
+                check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+                check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+                check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+                if (check_player1 == 0){
+                    someone_left = 1;
+                    continue;
+                }else if(check_player2 == 0){
+                    someone_left = 1;
+                    continue;
+                }else if(check_player3 == 0){
+                    someone_left = 1;
+                    continue;
+                }else{
+                    printf("通過 Player 連線測試，Player 都還在\n");
+                }
                 int turn = current_node->characterArray[i];
                 if (turn == EREN)
                 {
@@ -340,7 +356,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                     printf("這一 turn 有人沒有選項 QQ\n");
                 }
             }
-            if (someone_left == 1){
+            if(someone_left == 1){
                 continue;
             }
         }
