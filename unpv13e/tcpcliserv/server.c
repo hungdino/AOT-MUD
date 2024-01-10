@@ -88,10 +88,13 @@ int main(int argc, char *argv[]) {
         // 開始接受 Client 連線
         while(1){
             newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-            int n = Readline(newsockfd, buffer, BUFFER_SIZE);
+            int n = recv(newsockfd, buffer, BUFFER_SIZE, 0);
 	        if (n > 0) {
     		    buffer[strcspn(buffer, "\n")] = '\0'; // 去掉換行符
-	        }
+	        }else{
+                printf("接收 Client ID 時發生錯誤，請重新連線。\n");
+                continue;
+            }
             if (newsockfd < 0) {
                 perror("ERROR on accept");
                 exit(1);
@@ -379,7 +382,7 @@ return: TO_PLAY or TO_SPECTATE or -1
     char buffer[BUFFER_SIZE];
     int n;
     srand(time(NULL));
-    if ((n = Readline(client_sock, buffer, BUFFER_SIZE)) <= 0){
+    if ((n = recv(client_sock, buffer, BUFFER_SIZE, 0)) <= 0){
         return -1;
     }else{
         int choice = atoi(buffer);
