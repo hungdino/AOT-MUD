@@ -195,11 +195,12 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         if (check_player1 == 0 || check_player2 == 0 || check_player3 ==0){
             someone_left = 1;
             printf("有人中離了，someone_left = %d\n", someone_left);
+            printf("check_player1 = %d\n", check_player1);
+            printf("check_player2 = %d\n", check_player2);
+            printf("check_player3 = %d\n", check_player3);
         }
             
-        printf("check_player1 = %d\n", check_player1);
-        printf("check_player2 = %d\n", check_player2);
-        printf("check_player3 = %d\n", check_player3);
+
 
         if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
