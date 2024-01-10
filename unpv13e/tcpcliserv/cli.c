@@ -77,7 +77,7 @@ void print_menu(int highlight, char* choices[], int n_choices, int start_row) {
     fflush(stdout);
 }
 char *choices[3][3] = {
-        {"A", "B", "C"},
+        {"[1]", "[2]", "[3]"},
         {"A", "B", "C"},
         {"选项 A", "选项 B", "选项 C"}
     };
@@ -92,9 +92,9 @@ bool xchg_data(FILE* fp, int sockfd) {
     id[len] = '\n';
     id[len + 1] = '\0';
     Writen(sockfd, id, strlen(id));
-    printf("sent: %s\n", id);
+    //printf("sent: %s\n", id);
     readline(sockfd, recvline, MAXLINE);
-    printf("recv: %s", recvline);
+    printf("%s", recvline);
 
     stdineof = 0;
     peer_exit = 0;
@@ -106,7 +106,7 @@ bool xchg_data(FILE* fp, int sockfd) {
     int highlight = 0;
     
     setup_non_blocking_io();
-    printf("a\n");
+    //printf("a\n");
     bool is_choose=true;
     print_menu(highlight, choices[0], 3, 1);
     for (; ; ) {
@@ -136,7 +136,7 @@ bool xchg_data(FILE* fp, int sockfd) {
                 if (stdineof == 1)
                     return;         /* normal termination */
                 else {
-                    printf("(End of input from the peer!)\n");
+                    //printf("(End of input from the peer!)\n");
                     peer_exit = 1;
                 };
             }
@@ -144,7 +144,7 @@ bool xchg_data(FILE* fp, int sockfd) {
                 recvline[n] = '\0';
                 if (recvline[0] == '5')
                 {
-                    printf("game over\n");
+                    //printf("game over\n");
                     stdineof = 1;
                     Shutdown(sockfd, SHUT_WR);
                 }
@@ -164,7 +164,7 @@ bool xchg_data(FILE* fp, int sockfd) {
             memset(recvline,'\0',sizeof(recvline));
             if (found != NULL){
             	is_choose=true;
-            	printf("aaa%s\n", recvline);
+            	printf("%s\n", recvline);
             	print_menu(highlight, choices[0], 3, 1);
             	found=NULL;
             }
@@ -194,6 +194,7 @@ bool xchg_data(FILE* fp, int sockfd) {
                         printf("(leaving...)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
+                        restore_original_settings();
                         return 0;
    
                     break;
@@ -202,7 +203,7 @@ bool xchg_data(FILE* fp, int sockfd) {
                     sprintf(sendline, "%d\n", user_choice+1);
                     is_choose=false;
                     n = strlen(sendline);
-                    printf("%d\n",user_choice+1);
+                    printf("\n",user_choice+1);
                     Writen(sockfd, sendline, n);
                     
                     break;
@@ -218,6 +219,7 @@ bool xchg_data(FILE* fp, int sockfd) {
                         printf("(leaving...)\n");
                         stdineof = 1;
                         Shutdown(sockfd, SHUT_WR);      /* send FIN */
+                        restore_original_settings();
                         return 0;
                     
                     break;
@@ -246,6 +248,7 @@ main(int argc, char** argv)
     if (argc != 3)
         err_quit("usage: tcpcli <IPaddress> <ID>");
     while(again){
+    clr_scr();
     sockfd = Socket(AF_INET, SOCK_STREAM, 0);
 	
     bzero(&servaddr, sizeof(servaddr));
@@ -254,12 +257,12 @@ main(int argc, char** argv)
     Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
     strcpy(id, argv[2]);
     printf("%s\n", ascii_art);
-    printf("親愛的玩家您好，歡迎進入遊戲\n以下是操作說明\na d 左右移動\nq   退出\ne   送出\n\n", ascii_art);
-    sleep(0);
+    printf("親愛的%s玩家您好，歡迎進入遊戲\n以下是操作說明\na d 左右移動\nq   退出\ne   送出\n\n", id, ascii_art);
+    sleep(3);
     Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
-	
+    clr_scr();
     again=xchg_data(stdin, sockfd);		/* do it all */
 }
-	restore_original_settings();
+    restore_original_settings();
     exit(0);
 }
