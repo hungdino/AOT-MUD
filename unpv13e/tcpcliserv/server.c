@@ -189,7 +189,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
         char player_check_buffer[BUFFER_SIZE];
-        int check_player1 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player1 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_DONTWAIT);
         int check_player2 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
         int check_player3 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
         printf("check_player1 = %d\n", check_player1);
