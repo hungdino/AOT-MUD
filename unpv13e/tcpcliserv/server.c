@@ -242,7 +242,8 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         snprintf(choice_message, BUFFER_SIZE, "艾連選擇「%s」\n", current_node->Eren[decided_choice-1]);
                         broadcast(players, total_players, spectators, total_spectators, choice_message);
                     }
-                    erenChose[current_node->nodeSeriesNum] = decided_choice;
+                    if(current_node->nodeSeriesNum==51) erenChose[5]= decided_choice;
+                    else erenChose[current_node->nodeSeriesNum] = decided_choice;
                 }
                 else if (turn == MIKASA)
                 {
