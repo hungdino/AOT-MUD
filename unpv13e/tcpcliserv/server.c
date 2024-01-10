@@ -188,20 +188,19 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         node_counter++;
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
-        char player_check_buffer[BUFFER_SIZE];
-        int check_player1 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_DONTWAIT);
-        int check_player2 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-        int check_player3 = recv(socket, player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
-        printf("check_player1 = %d\n", check_player1);
-        printf("check_player2 = %d\n", check_player2);
-        printf("check_player3 = %d\n", check_player3);
-        if (check_player1 == 0 || check_player2 == 0 || check_player3 == 0){
-            someone_left = 1;
-            printf("有人中離了，someone_left = %d\n", someone_left);
-
+        char player_check_buffer[BUFFER_SIZE] = "瑪利亞之牆奪還戰參戰成員準備就緒，接下來會輪流由不同成員採取行動，請耐心等候自己的出場機會。\n";
+        int check_player1 = send(socket, player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
+        int check_player2 = send(socket, player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
+        int check_player3 = send(socket, player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
+        if (check_player1 < 0 || check_player2 < 0 || check_player3 < 0) {
+            if (errno == EPIPE) {
+                someone_left = 1;
+                printf("有人中離了，someone_left = %d\n", someone_left);
+                printf("check_player1 = %d\n", check_player1);
+                printf("check_player2 = %d\n", check_player2);
+                printf("check_player3 = %d\n", check_player3);
+            }
         }
-            
-
 
         if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
