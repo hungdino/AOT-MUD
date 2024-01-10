@@ -188,20 +188,20 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         node_counter++;
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
-        char player_check_buffer[BUFFER_SIZE] = "瑪利亞之牆奪還戰參戰成員準備就緒，接下來會輪流由不同成員採取行動，請耐心等候自己的出場機會。\n";
-        int check_player1 = send(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
-        int check_player2 = send(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
-        int check_player3 = send(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
-        if (check_player1 < 0 || check_player2 < 0 || check_player3 < 0) {
-            if (errno == EPIPE) {
-                someone_left = 1;
-                printf("有人中離了，someone_left = %d\n", someone_left);
-                printf("check_player1 = %d\n", check_player1);
-                printf("check_player2 = %d\n", check_player2);
-                printf("check_player3 = %d\n", check_player3);
-            }
+        char player_check_buffer[BUFFER_SIZE];
+        int check_player1 = recv(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player2 = recv(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        int check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
+        if (check_player1 == 0 || check_player2 == 0 || check_player3 == 0){
+            someone_left = 1;
+            printf("有人中離了，someone_left = %d\n", someone_left);
+            printf("check_player1 = %d\n", check_player1);
+            printf("check_player2 = %d\n", check_player2);
+            printf("check_player3 = %d\n", check_player3);
+        }else{
+            printf("通過 player 連線測試，Player 都還在\n");
         }
-
+        
         if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
@@ -214,6 +214,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             break;
         }else{
             // 進入新章節，送故事
+            broadcast(players, total_players, spectators, total_spectators, "瑪利亞之牆奪還戰參戰成員準備就緒，接下來會輪流由不同成員採取行動，請耐心等候自己的出場機會。\n");
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
             for (int i = 0; i < MAX_PLAYERS; i++){
@@ -311,7 +312,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
-                            decided_choice = rand() % 3 + 1;
+                            decided_choice = rand() % 2 + 1;
                             printf("阿爾敏被隨機決定了 %d\n", decided_choice);
                             char choice_message[BUFFER_SIZE];
                             snprintf(choice_message, BUFFER_SIZE, "阿爾敏選擇「%s」\n", current_node->Armin[decided_choice-1]);
