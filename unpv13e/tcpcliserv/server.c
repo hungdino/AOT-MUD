@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
                 if (pid == 0) {
                     // child process
                     game_process(players, spectators, total_players, total_spectators);
-                    printf("以上一局遊戲結束，該局的 child process 正常關閉。\n");
+                    printf("以上的一局遊戲結束，該局的 child process 正常關閉。\n");
                     exit(0);
                 }
             }
@@ -185,6 +185,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
     StoryNode* next_node = &Main_node1;
     int node_counter = 0;
     int someone_left = 0;
+    broadcast(players, total_players, spectators, total_spectators, "瑪利亞之牆奪還戰參戰成員準備就緒，接下來會輪流由不同成員採取行動，請耐心等候自己的出場機會。\n");
     while (1)
     {
         current_node = next_node;
@@ -217,7 +218,6 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
             break;
         }else{
             // 進入新章節，送故事
-            broadcast(players, total_players, spectators, total_spectators, "瑪利亞之牆奪還戰參戰成員準備就緒，接下來會輪流由不同成員採取行動，請耐心等候自己的出場機會。\n");
             broadcast(players, total_players, spectators, total_spectators, current_node->story);
             // 送選項
             for (int i = 0; i < MAX_PLAYERS; i++){
