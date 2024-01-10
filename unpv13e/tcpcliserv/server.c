@@ -189,9 +189,9 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         printf("現在的節點是 current_node->nodeSeriesNum = %d\n", current_node->nodeSeriesNum);
         printf("現在進行了幾個節點： %d\n", node_counter);
         char player_check_buffer[BUFFER_SIZE] = "瑪利亞之牆奪還戰參戰成員準備就緒，接下來會輪流由不同成員採取行動，請耐心等候自己的出場機會。\n";
-        int check_player1 = send(socket, player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
-        int check_player2 = send(socket, player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
-        int check_player3 = send(socket, player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
+        int check_player1 = send(players[0], player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
+        int check_player2 = send(players[1], player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
+        int check_player3 = send(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_NOSIGNAL);
         if (check_player1 < 0 || check_player2 < 0 || check_player3 < 0) {
             if (errno == EPIPE) {
                 someone_left = 1;
