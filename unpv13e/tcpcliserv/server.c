@@ -324,7 +324,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 }
             }
         }
-        next_node = decide_Next_Node(current_node, node_counter, erenChose, mikasaChose, arminChose);
+        next_node = decide_Next_Node(current_node, current_node->nodeSeriesNum, erenChose, mikasaChose, arminChose);
     }
 }
 
