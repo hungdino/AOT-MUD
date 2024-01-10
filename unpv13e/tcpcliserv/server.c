@@ -199,15 +199,22 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
         if (check_player1 == 0){
             someone_left = 1;
             broadcast(players, total_players, spectators, total_spectators, "很抱歉，艾連脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+            game_ending(players, spectators, total_players, total_spectators, current_node->story);
+            break;
         }else if(check_player2 == 0){
             someone_left = 1;
             broadcast(players, total_players, spectators, total_spectators, "很抱歉，米卡莎脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+            game_ending(players, spectators, total_players, total_spectators, current_node->story);
+            break;
         }else if(check_player3 == 0){
             someone_left = 1;
             broadcast(players, total_players, spectators, total_spectators, "很抱歉，阿爾敏脫離作戰編制，為了降低傷亡，軍團下令作戰取消，請即刻撤離戰場。\n");
+            game_ending(players, spectators, total_players, total_spectators, current_node->story);
+            break;
         }else{
             printf("通過 Player 連線測試，Player 都還在\n");
         }
+        printf("檢查 someone_left = %d\n", someone_left);
         if(someone_left == 1){
             broadcast(players, total_players, spectators, total_spectators, "因為預料之外的成員離去，戰役已提早終止，請選擇 Q 退出，X 重啟戰役。\n");
             game_ending(players, spectators, total_players, total_spectators, current_node->story);
@@ -228,13 +235,13 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                 check_player3 = recv(players[2], player_check_buffer, sizeof(player_check_buffer), MSG_PEEK | MSG_DONTWAIT);
                 if (check_player1 == 0){
                     someone_left = 1;
-                    continue;
+                    break;
                 }else if(check_player2 == 0){
                     someone_left = 1;
-                    continue;
+                    break;
                 }else if(check_player3 == 0){
                     someone_left = 1;
-                    continue;
+                    break;
                 }else{
                     printf("通過 Player 連線測試，Player 都還在\n");
                 }
