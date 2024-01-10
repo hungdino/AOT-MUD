@@ -68,6 +68,7 @@ char *choices[3][3] = {
         {"选项 A", "选项 B", "选项 C"}
     };
 void xchg_data(FILE* fp, int sockfd) {
+    start:	
     int maxfdp1, stdineof, peer_exit, n;
     fd_set rset;
     char sendline[MAXLINE], recvline[MAXLINE], buff[MAXLINE],recvlinex[MAXLINE];
@@ -128,13 +129,7 @@ void xchg_data(FILE* fp, int sockfd) {
             }
             else if (n > 0) {
                 recvline[n] = '\0';
-                if (recvline[0] == '5')
-                {
-                    printf("game over\n");
-                    stdineof = 1;
-                    Shutdown(sockfd, SHUT_WR);
-                }
-                else if (recvline[0] == '6')
+                if (recvline[0] == '6')
                 {
 
                     int random_number = (rand() % 4) + 1;
@@ -191,6 +186,16 @@ void xchg_data(FILE* fp, int sockfd) {
                     is_choose=false;
                     n = strlen(sendline);
                     printf("%d\n",user_choice+1);
+		    	
+		  //  if(sendline==1&& recvline==){
+		  //	   Shutdown(sockfd, SHUT_WR);   
+               	  //	   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+                  //       Connect(sockfd, (SA*)&servaddr, sizeof(servaddr));
+		  //	   printf("(reconnecting)\n");
+                  //       goto start;
+		  //  }
+		  
+
                     Writen(sockfd, sendline, n);
                     
                     break;
