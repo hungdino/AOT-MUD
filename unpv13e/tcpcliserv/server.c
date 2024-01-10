@@ -221,7 +221,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         someone_left = 1;
                         break;
                     }else if (decided_choice == 3){
-                        int roll = decide_to_roll_a_dice(current_node, EREN);
+                        int roll = decide_to_roll_a_dice(current_node->nodeSeriesNum, EREN);
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
@@ -258,7 +258,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         someone_left = 1;
                         break;
                     }else if (decided_choice == 3){
-                        int roll = decide_to_roll_a_dice(current_node, MIKASA);
+                        int roll = decide_to_roll_a_dice(current_node->nodeSeriesNum, MIKASA);
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
@@ -295,7 +295,7 @@ void game_process(int* players, int* spectators, int total_players, int total_sp
                         someone_left = 1;
                         break;
                     }else if (decided_choice == 3){
-                        int roll = decide_to_roll_a_dice(current_node, ARMIN);
+                        int roll = decide_to_roll_a_dice(current_node->nodeSeriesNum, ARMIN);
                         if (roll == ROLL_DICE){
                             // assign random choice between 1 and 2
                             srand(time(NULL));
