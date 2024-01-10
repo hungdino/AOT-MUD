@@ -4,6 +4,7 @@
 #define OPTION_DESC_LENGTH 256
 #define STORY_LENGTH 1024
 #define ID_LENGTH 32
+#define MAX_NODE 14
 #define EREN 0
 #define MIKASA 1
 #define ARMIN 2
@@ -167,7 +168,7 @@ StoryNode Main_node5_false = {
 
 StoryNode Main_node6 = {
     6, // nodeSeriesNum
-    "另一邊，被阿爾敏成功喚醒的巨人化艾連將巨石成功舉了起來，並開始向洞口走去，伊恩見狀立馬命令所有精銳部隊拚死掩護艾連，但巨人們卻開始不再關注到處移動的人，直直往艾倫過去，幸好大量精銳部隊也趕到。"
+    "艾倫終於成功清醒了!!被阿爾敏成功喚醒的巨人化艾連將巨石成功舉了起來，並開始向洞口走去，伊恩見狀立馬命令所有精銳部隊拚死掩護艾連，但巨人們卻開始不再關注到處移動的人，直直往艾倫過去，幸好大量精銳部隊也趕到。"
     ,{ARMIN, MIKASA, NONE_CHARACTER}, // characterArray
     {   // 艾連的選項
         "None",
@@ -602,38 +603,13 @@ StoryNode NE_another2 = {
         "與神秘角色合作"//(阿爾敏不重要)
     }
 };
-int decide_to_roll_a_dice(int node_num, int character) {
-    switch (node_num)
-    {
-    case 1:
-        if (character == ARMIN)
-            return ROLL_DICE;
-        else
-            return NOT_ROLL_DICE;
-        break;
-    case 4:
-        if (character == EREN)
-            return ROLL_DICE;
-        else
-            return NOT_ROLL_DICE;
-        break;
-    case 13:
-        if (character == EREN)
-            return ROLL_DICE;
-        else
-            return NOT_ROLL_DICE;
-        break;
-    default:
-        return -1;
-        break;
-    }
-}
 /*
 void traverseNode(StoryNode node) {
     printf("進入節點 %d.\n", node.nodeSeriesNum);
     printf("故事：%s\n", node.story);
     printf("本輪需要做出選擇的玩家為：");
     for (int i = 0; i < MAX_CHARACTERS_PER_NODE; i++)
+    
     {
         if (node.characterArray[i] != "None")
         {
@@ -669,6 +645,32 @@ void traverseNode(StoryNode node) {
     }
 }
 */
+int decide_to_roll_a_dice(int node_num, int character) {
+    switch (node_num)
+    {
+    case 1:
+        if (character == ARMIN)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
+        break;
+    case 4:
+        if (character == EREN)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
+        break;
+    case 13:
+        if (character == EREN)
+            return ROLL_DICE;
+        else
+            return NOT_ROLL_DICE;
+        break;
+    default:
+        return -1;
+        break;
+    }
+}
 StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* erenChose, int* mikasaChose, int* arminChose) {
     int currentNode = current_node->nodeSeriesNum;
     int nextNode;
@@ -684,10 +686,10 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         else if (mikasaChose[numOfNodePlayed] == 2) {
             if (erenChose[numOfNodePlayed] == 2) {
-                nextNode = 2;
-            }
-            else if (erenChose[numOfNodePlayed] == 1) {
                 nextNode = 11;
+            }
+            else if (erenChose[numOfNodePlayed] == 3) {
+                nextNode = 2;
             }
             else {
                 if (arminChose[numOfNodePlayed] == 2) {
@@ -704,7 +706,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
                     nextNode = 3;
         }
         if(erenChose[numOfNodePlayed] == 2){
-        	nextNode=16;
+        	    nextNode=16;
         }
         if (arminChose[numOfNodePlayed] == 2){
                     nextNode = 15;
@@ -717,7 +719,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         if (erenChose[numOfNodePlayed] == 1) {
             nextNode = 16;//BE特殊
         }
-        else if (mikasaChose[numOfNodePlayed] == 2) {
+        else if (mikasaChose[numOfNodePlayed] == 3) {
             nextNode = 13;//米咖沙normal
         }
         else {
@@ -742,17 +744,17 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         break;
     case 5:
-        if (mikasaChose[numOfNodePlayed] != 3 && arminChose[numOfNodePlayed] == 3)
+        if (mikasaChose[numOfNodePlayed] != 3 && arminChose[numOfNodePlayed] == 1 && mikasaChose[3] == 2)
             nextNode = 51;
         else {
             nextNode = 52;
         }
         break;
     case 51:
-        if (erenChose[numOfNodePlayed] == 3) {
+        if (erenChose[5] == 3) {
             if (mikasaChose[5] == 1)
                 nextNode = 6;//跳到正確清醒
-            if (mikasaChose[5] == 2)
+            else
                 nextNode = 8;//跳到錯誤清醒
         }
         else {
@@ -765,19 +767,26 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
     case 6:
         if (mikasaChose[numOfNodePlayed] == 1 && arminChose[numOfNodePlayed] == 1) {
             nextNode = 15;//BE一般
+            break;
         }
         else if (mikasaChose[numOfNodePlayed] == 1 || arminChose[numOfNodePlayed] == 1) {
             nextNode = 10;
+            break;
         }
-        else if (arminChose[numOfNodePlayed] == 3) {
-            nextNode = 9;//TE結局前
-        }
-        else {
-            nextNode = 7;
+        else{
+        	if (arminChose[numOfNodePlayed] == 2) {
+        	     nextNode = 7;
+        	     break;
+           
+        	}
+        	if (arminChose[numOfNodePlayed] == 3) {
+        	   nextNode = 9; //TE結局前
+        	   break;
+        	}
         }
         break;
     case 7:
-        if (erenChose[numOfNodePlayed] == 1) {
+        if (erenChose[7] == 1) {
             if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
                 nextNode = 40;//TE 死亡米咖殺有來
             else if (erenChose[3] == 3)
@@ -802,19 +811,22 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         }
         break;
     case 9:
-        if (erenChose[numOfNodePlayed] == 1) {
+        if (erenChose[numOfNodePlayed] == 2) {
+        	if (mikasaChose[numOfNodePlayed] == 1) {
+            		nextNode = 20;//NE1 米卡莎死亡
+        	}
+        	else {
+            		nextNode = 99;//HE
+        	}
+            
+        }
+        else {
             if (mikasaChose[6] == 2 || mikasaChose[8] == 2)
                 nextNode = 40;//TE 死亡米咖殺有來
             else if (erenChose[3] == 3)
                 nextNode = 41;//TE 死亡
             else
                 nextNode = 55;//TE
-        }
-        else if (mikasaChose[numOfNodePlayed] == 1) {
-            nextNode = 20;//NE1 米卡莎死亡
-        }
-        else {
-            nextNode = 99;//HE
         }
         break;
     case 10:
@@ -829,6 +841,7 @@ StoryNode* decide_Next_Node(StoryNode* current_node, int numOfNodePlayed, int* e
         else {
             nextNode = 15;//BE一般
         }
+        break;
     case 11:
         if (erenChose[numOfNodePlayed] == mikasaChose[numOfNodePlayed]) {
             if (erenChose[numOfNodePlayed] == 3) {
